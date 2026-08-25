@@ -3,6 +3,7 @@ package com.syncreserve.service;
 import com.syncreserve.dto.CreateEventRequest;
 import com.syncreserve.dto.EventResponse;
 import com.syncreserve.dto.SeatResponse;
+import com.syncreserve.dto.UpdateEventRequest;
 import com.syncreserve.entity.Event;
 import com.syncreserve.entity.Seat;
 import com.syncreserve.exception.ResourceNotFoundException;
@@ -27,6 +28,10 @@ public class EventService {
         this.seatRepository = seatRepository;
     }
 
+    // ==========================================
+    // CREATE EVENT
+    // ==========================================
+
     @Transactional
     public EventResponse createEvent(CreateEventRequest request) {
 
@@ -42,6 +47,10 @@ public class EventService {
         return mapToResponse(savedEvent);
     }
 
+    // ==========================================
+    // GET ALL EVENTS
+    // ==========================================
+
     @Transactional(readOnly = true)
     public List<EventResponse> getAllEvents() {
 
@@ -51,6 +60,10 @@ public class EventService {
                 .toList();
     }
 
+    // ==========================================
+    // GET EVENT BY ID
+    // ==========================================
+
     @Transactional(readOnly = true)
     public EventResponse getEventById(Long eventId) {
 
@@ -59,6 +72,32 @@ public class EventService {
         return mapToResponse(event);
     }
 
+    // ==========================================
+    // UPDATE EVENT
+    // ==========================================
+
+    @Transactional
+    public EventResponse updateEvent(
+            Long eventId,
+            UpdateEventRequest request
+    ) {
+
+        Event event = findEvent(eventId);
+
+        event.setName(request.getName());
+        event.setDescription(request.getDescription());
+        event.setEventDate(request.getEventDate());
+        event.setLocation(request.getLocation());
+
+        Event updatedEvent = eventRepository.save(event);
+
+        return mapToResponse(updatedEvent);
+    }
+
+    // ==========================================
+    // DELETE EVENT
+    // ==========================================
+
     @Transactional
     public void deleteEvent(Long eventId) {
 
@@ -66,6 +105,10 @@ public class EventService {
 
         eventRepository.delete(event);
     }
+
+    // ==========================================
+    // GENERATE SEATS
+    // ==========================================
 
     @Transactional
     public void generateSeats(
@@ -101,6 +144,10 @@ public class EventService {
         }
     }
 
+    // ==========================================
+    // GET SEATS
+    // ==========================================
+
     @Transactional(readOnly = true)
     public List<SeatResponse> getSeatsForEvent(Long eventId) {
 
@@ -117,6 +164,10 @@ public class EventService {
                 .toList();
     }
 
+    // ==========================================
+    // FIND EVENT
+    // ==========================================
+
     private Event findEvent(Long eventId) {
 
         return eventRepository.findById(eventId)
@@ -126,6 +177,10 @@ public class EventService {
                         )
                 );
     }
+
+    // ==========================================
+    // MAP EVENT RESPONSE
+    // ==========================================
 
     private EventResponse mapToResponse(Event event) {
 
