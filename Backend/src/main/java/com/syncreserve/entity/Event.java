@@ -1,7 +1,7 @@
 package com.syncreserve.entity;
 
 import jakarta.persistence.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ public class Event {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(
@@ -38,6 +39,7 @@ public class Event {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
     public Event() {
