@@ -10,6 +10,8 @@ import com.syncreserve.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.syncreserve.exception.SeatAlreadyReservedException;
+import com.syncreserve.exception.ResourceNotFoundException;
+import com.syncreserve.dto.ReservationResponse;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +33,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation createReservation(ReservationRequest request) {
+    public ReservationResponse createReservation(ReservationRequest request) {
 
         Event event = eventRepository.findById(request.getEventId())
                 .orElseThrow(() ->
@@ -67,6 +69,16 @@ public class ReservationService {
         reservation.setSeat(seat);
         reservation.setReservedAt(LocalDateTime.now());
 
-        return reservationRepository.save(reservation);
+        Reservation savedReservation =
+                reservationRepository.save(reservation);
+
+        return new ReservationResponse(
+                savedReservation.getId(),
+                event.getId(),
+                event.getName(),
+                seat.getId(),
+                seat.getSeatNumber(),
+                savedReservation.getReservedAt()
+        );
     }
 }
