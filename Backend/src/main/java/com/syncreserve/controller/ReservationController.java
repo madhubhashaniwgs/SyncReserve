@@ -9,6 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.syncreserve.dto.ReservationResponse;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController {
@@ -32,5 +38,39 @@ public class ReservationController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(reservation);
+    }
+
+    //Get all reservations
+    @GetMapping
+    public ResponseEntity<List<ReservationResponse>>
+    getAllReservations() {
+
+        return ResponseEntity.ok(
+                reservationService.getAllReservations()
+        );
+    }
+
+    //Get reservations by event
+    @GetMapping("/event/{eventId}")
+    public ResponseEntity<List<ReservationResponse>>
+    getReservationsByEvent(
+            @PathVariable Long eventId
+    ) {
+
+        return ResponseEntity.ok(
+                reservationService
+                        .getReservationsByEvent(eventId)
+        );
+    }
+
+    //Cancel reservation
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<Void> cancelReservation(
+            @PathVariable Long reservationId
+    ) {
+
+        reservationService.cancelReservation(reservationId);
+
+        return ResponseEntity.noContent().build();
     }
 }

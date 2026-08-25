@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.syncreserve.exception.SeatAlreadyReservedException;
 import com.syncreserve.exception.ResourceNotFoundException;
 import com.syncreserve.dto.ReservationResponse;
-
+import java.util.List;
 import java.time.LocalDateTime;
 
 @Service
@@ -79,6 +79,61 @@ public class ReservationService {
                 seat.getId(),
                 seat.getSeatNumber(),
                 savedReservation.getReservedAt()
+        );
+    }
+
+    @Transactional
+    public void cancelReservation(Long reservationId) {
+
+        Reservation reservation = reservationRepository
+                .findById(reservationId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Reservation not found"
+                        )
+                );
+
+        reservationRepository.delete(reservation);
+    }
+
+
+    public List<ReservationResponse> getAllReservations() {
+
+        return reservationRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public List<ReservationResponse> getReservationsByEvent(
+            Long eventId
+    ) {
+
+        eventRepository.findById(eventId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Event not found"
+                        )
+                );
+
+        return reservationRepository.findByEventId(eventId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+
+    private ReservationResponse mapToResponse(
+            Reservation reservation
+    ) {
+
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getEvent().getId(),
+                reservation.getEvent().getName(),
+                reservation.getSeat().getId(),
+                reservation.getSeat().getSeatNumber(),
+                reservation.getReservedAt()
         );
     }
 }
