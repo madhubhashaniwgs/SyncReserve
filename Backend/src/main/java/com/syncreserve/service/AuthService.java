@@ -10,8 +10,15 @@ import com.syncreserve.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.syncreserve.dto.ForgotPasswordRequest;
+import com.syncreserve.dto.ResetPasswordRequest;
+import com.syncreserve.exception.ResourceNotFoundException;
+import com.syncreserve.dto.ChangePasswordRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 
 @Service
 public class AuthService {
@@ -118,5 +125,104 @@ public class AuthService {
         );
     }
 
+
+
+    //fogot password
+
+    public String forgotPassword(ForgotPasswordRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        String resetToken = UUID.randomUUID().toString();
+
+        user.setResetToken(resetToken);
+
+        user.setResetTokenExpiry(
+                LocalDateTime.now().plusMinutes(15)
+        );
+
+        userRepository.save(user);
+
+        return resetToken;
+    }
+
+
+    //reset password
+
+    public void resetPassword(ResetPasswordRequest request) {
+
+        User user = userRepository
+                .findByResetToken(request.getToken())
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Invalid reset token"
+                        )
+                );
+
+        if (user.getResetTokenExpiry() == null ||
+                user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+
+            throw new IllegalArgumentException(
+                    "Reset token has expired"
+            );
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+
+        userRepository.save(user);
+    }
+
+    //change password
+
+    public void changePassword(ChangePasswordRequest request) {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPassword()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "Current password is incorrect"
+            );
+        }
+
+        if (passwordEncoder.matches(
+                request.getNewPassword(),
+                user.getPassword()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "New password must be different from current password"
+            );
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        userRepository.save(user);
+    }
 
 }

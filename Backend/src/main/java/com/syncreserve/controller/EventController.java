@@ -3,12 +3,13 @@ package com.syncreserve.controller;
 import com.syncreserve.dto.CreateEventRequest;
 import com.syncreserve.dto.EventResponse;
 import com.syncreserve.dto.SeatResponse;
+import com.syncreserve.dto.UpdateEventRequest;
 import com.syncreserve.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,9 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    // CREATE EVENT - ADMIN ONLY
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventResponse> createEvent(
             @Valid @RequestBody CreateEventRequest request
     ) {
@@ -34,6 +37,7 @@ public class EventController {
                 .body(response);
     }
 
+    // GET ALL EVENTS - AUTHENTICATED USERS
     @GetMapping
     public ResponseEntity<List<EventResponse>> getAllEvents() {
 
@@ -42,6 +46,7 @@ public class EventController {
         );
     }
 
+    // GET EVENT - AUTHENTICATED USERS
     @GetMapping("/{eventId}")
     public ResponseEntity<EventResponse> getEventById(
             @PathVariable Long eventId
@@ -52,7 +57,27 @@ public class EventController {
         );
     }
 
+    // UPDATE EVENT - ADMIN ONLY
+
+
+    @PutMapping("/{eventId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EventResponse> updateEvent(
+            @PathVariable Long eventId,
+            @Valid @RequestBody UpdateEventRequest request
+    ) {
+
+        return ResponseEntity.ok(
+                eventService.updateEvent(
+                        eventId,
+                        request
+                )
+        );
+    }
+
+    // DELETE EVENT - ADMIN ONLY
     @DeleteMapping("/{eventId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEvent(
             @PathVariable Long eventId
     ) {
@@ -62,7 +87,9 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    // GENERATE SEATS - ADMIN ONLY
     @PostMapping("/{eventId}/seats")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> generateSeats(
             @PathVariable Long eventId,
             @RequestParam int rows,
@@ -80,6 +107,7 @@ public class EventController {
                 .body("Seats generated successfully");
     }
 
+    // GET SEATS - AUTHENTICATED USERS
     @GetMapping("/{eventId}/seats")
     public ResponseEntity<List<SeatResponse>> getSeats(
             @PathVariable Long eventId

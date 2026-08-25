@@ -17,6 +17,11 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     Optional<Seat> findByIdAndEventId(Long id, Long eventId);
 
+    boolean existsByEventIdAndSeatNumber(
+            Long eventId,
+            String seatNumber
+    );
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
             SELECT s

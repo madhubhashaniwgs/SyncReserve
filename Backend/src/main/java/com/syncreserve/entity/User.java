@@ -37,6 +37,13 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
+    @Column(length = 255)
+    private String resetToken;
+
+    @JsonIgnore
+    private LocalDateTime resetTokenExpiry;
+
     public User() {
     }
 
@@ -82,5 +89,21 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 }
