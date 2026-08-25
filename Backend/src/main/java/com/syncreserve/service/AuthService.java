@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.syncreserve.dto.ForgotPasswordRequest;
 import com.syncreserve.dto.ResetPasswordRequest;
 import com.syncreserve.exception.ResourceNotFoundException;
+import com.syncreserve.dto.ChangePasswordRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -176,6 +178,49 @@ public class AuthService {
 
         user.setResetToken(null);
         user.setResetTokenExpiry(null);
+
+        userRepository.save(user);
+    }
+
+    //change password
+
+    public void changePassword(ChangePasswordRequest request) {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPassword()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "Current password is incorrect"
+            );
+        }
+
+        if (passwordEncoder.matches(
+                request.getNewPassword(),
+                user.getPassword()
+        )) {
+
+            throw new IllegalArgumentException(
+                    "New password must be different from current password"
+            );
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
 
         userRepository.save(user);
     }

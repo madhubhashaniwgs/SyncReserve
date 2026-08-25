@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.syncreserve.dto.ForgotPasswordRequest;
 import com.syncreserve.dto.ResetPasswordRequest;
+import com.syncreserve.dto.ChangePasswordRequest;
 import java.util.Map;
 
 @RestController
@@ -82,6 +83,23 @@ public class AuthController {
                 Map.of(
                         "message",
                         "Password reset successfully"
+                )
+        );
+    }
+
+    //change password
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+
+        authService.changePassword(request);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message",
+                        "Password changed successfully"
                 )
         );
     }
