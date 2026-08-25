@@ -10,8 +10,13 @@ import com.syncreserve.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.syncreserve.dto.ForgotPasswordRequest;
+import com.syncreserve.dto.ResetPasswordRequest;
+import com.syncreserve.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 
 @Service
 public class AuthService {
@@ -118,5 +123,61 @@ public class AuthService {
         );
     }
 
+
+
+    //fogot password
+
+    public String forgotPassword(ForgotPasswordRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        String resetToken = UUID.randomUUID().toString();
+
+        user.setResetToken(resetToken);
+
+        user.setResetTokenExpiry(
+                LocalDateTime.now().plusMinutes(15)
+        );
+
+        userRepository.save(user);
+
+        return resetToken;
+    }
+
+
+    //reset password
+
+    public void resetPassword(ResetPasswordRequest request) {
+
+        User user = userRepository
+                .findByResetToken(request.getToken())
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Invalid reset token"
+                        )
+                );
+
+        if (user.getResetTokenExpiry() == null ||
+                user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+
+            throw new IllegalArgumentException(
+                    "Reset token has expired"
+            );
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+
+        userRepository.save(user);
+    }
 
 }

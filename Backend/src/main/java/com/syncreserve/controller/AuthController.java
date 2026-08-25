@@ -9,6 +9,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.syncreserve.dto.ForgotPasswordRequest;
+import com.syncreserve.dto.ResetPasswordRequest;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -46,5 +49,40 @@ public class AuthController {
                 authService.login(request);
 
         return ResponseEntity.ok(response);
+    }
+
+    //forgot password
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request
+    ) {
+
+        String resetToken =
+                authService.forgotPassword(request);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "Password reset token generated",
+                        "resetToken", resetToken
+                )
+        );
+    }
+
+    //reset password
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request
+    ) {
+
+        authService.resetPassword(request);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message",
+                        "Password reset successfully"
+                )
+        );
     }
 }
