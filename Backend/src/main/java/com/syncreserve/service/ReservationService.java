@@ -38,7 +38,7 @@ public class ReservationService {
                         new RuntimeException("Event not found")
                 );
 
-        Seat seat = seatRepository.findById(request.getSeatId())
+        Seat seat = seatRepository.findByIdWithLock(request.getSeatId())
                 .orElseThrow(() ->
                         new RuntimeException("Seat not found")
                 );
