@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import com.syncreserve.entity.User;
 import com.syncreserve.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.syncreserve.exception.UnauthorizedReservationAccessException;
 
 @Service
 public class ReservationService {
@@ -94,6 +95,8 @@ public class ReservationService {
     @Transactional
     public void cancelReservation(Long reservationId) {
 
+        User currentUser = getCurrentUser();
+
         Reservation reservation = reservationRepository
                 .findById(reservationId)
                 .orElseThrow(() ->
@@ -101,6 +104,14 @@ public class ReservationService {
                                 "Reservation not found"
                         )
                 );
+
+        if (!reservation.getUser().getId()
+                .equals(currentUser.getId())) {
+
+            throw new UnauthorizedReservationAccessException(
+                    "You are not allowed to cancel this reservation"
+            );
+        }
 
         reservationRepository.delete(reservation);
     }
