@@ -95,15 +95,44 @@ public class ReservationService {
     @Transactional
     public void cancelReservation(Long reservationId) {
 
-        User currentUser = getCurrentUser();
+        var authentication =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
 
-        Reservation reservation = reservationRepository
-                .findById(reservationId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Reservation not found"
-                        )
-                );
+        boolean isAdmin =
+                authentication.getAuthorities()
+                        .stream()
+                        .anyMatch(authority ->
+                                authority.getAuthority()
+                                        .equals("ROLE_ADMIN")
+                        );
+
+        Reservation reservation =
+                reservationRepository
+                        .findById(reservationId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Reservation not found"
+                                )
+                        );
+
+
+        // ADMIN
+        // Can cancel any reservation
+
+
+        if (isAdmin) {
+            reservationRepository.delete(reservation);
+            return;
+        }
+
+
+        // USER
+        // Can cancel only own reservation
+
+
+        User currentUser = getCurrentUser();
 
         if (!reservation.getUser().getId()
                 .equals(currentUser.getId())) {

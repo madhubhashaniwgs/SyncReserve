@@ -10,9 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -30,14 +33,33 @@ public class SecurityConfig {
 
         AuthenticationEntryPoint authenticationEntryPoint =
                 (request, response, exception) -> {
+
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType("application/json");
+
                     response.getWriter().write(
                             """
                             {
                                 "status": 401,
                                 "error": "Unauthorized",
                                 "message": "Authentication is required"
+                            }
+                            """
+                    );
+                };
+
+        AccessDeniedHandler accessDeniedHandler =
+                (request, response, exception) -> {
+
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    response.setContentType("application/json");
+
+                    response.getWriter().write(
+                            """
+                            {
+                                "status": 403,
+                                "error": "Forbidden",
+                                "message": "You do not have permission to access this resource"
                             }
                             """
                     );
@@ -53,16 +75,34 @@ public class SecurityConfig {
                 )
 
                 .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(
-                                authenticationEntryPoint
-                        )
+                        exception
+                                .authenticationEntryPoint(
+                                        authenticationEntryPoint
+                                )
+                                .accessDeniedHandler(
+                                        accessDeniedHandler
+                                )
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public authentication endpoints
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login"
                         ).permitAll()
+
+                        // Admin-only endpoints
+                        .requestMatchers(
+                                "/api/admin/**"
+                        ).hasRole("ADMIN")
+
+                        // Authenticated users
+                        .requestMatchers(
+                                "/api/reservations/my"
+                        ).hasAnyRole("USER", "ADMIN")
+
+                        // All other API endpoints require login
                         .anyRequest().authenticated()
                 )
 
