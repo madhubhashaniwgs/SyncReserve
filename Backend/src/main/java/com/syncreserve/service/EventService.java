@@ -11,6 +11,7 @@ import com.syncreserve.repository.EventRepository;
 import com.syncreserve.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.syncreserve.repository.ReservationRepository;
 
 import java.util.List;
 
@@ -19,13 +20,17 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final SeatRepository seatRepository;
+    private final ReservationRepository reservationRepository;
 
     public EventService(
             EventRepository eventRepository,
-            SeatRepository seatRepository
+            SeatRepository seatRepository,
+            ReservationRepository reservationRepository
+
     ) {
         this.eventRepository = eventRepository;
         this.seatRepository = seatRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     // ==========================================
@@ -103,6 +108,15 @@ public class EventService {
 
         Event event = findEvent(eventId);
 
+        // Delete reservations first
+        reservationRepository.deleteByEventId(eventId);
+
+        // Delete seats
+        seatRepository.deleteAll(
+                seatRepository.findByEvent(event)
+        );
+
+        // Finally delete event
         eventRepository.delete(event);
     }
 
@@ -131,12 +145,22 @@ public class EventService {
 
             for (int number = 1; number <= seatsPerRow; number++) {
 
+                String seatNumber =
+                        rowLetter + String.valueOf(number);
+
+                boolean exists =
+                        seatRepository.existsByEventIdAndSeatNumber(
+                                eventId,
+                                seatNumber
+                        );
+
+                if (exists) {
+                    continue;
+                }
+
                 Seat seat = new Seat();
 
-                seat.setSeatNumber(
-                        rowLetter + String.valueOf(number)
-                );
-
+                seat.setSeatNumber(seatNumber);
                 seat.setEvent(event);
 
                 seatRepository.save(seat);

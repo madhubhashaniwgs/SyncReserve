@@ -1,5 +1,7 @@
 package com.syncreserve.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.*;
 
 @Entity
