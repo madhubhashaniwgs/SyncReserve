@@ -1,5 +1,5 @@
 package com.syncreserve.entity;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -23,6 +23,7 @@ public class Seat {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)
+    @JsonIgnore
     private Event event;
 
     @OneToMany(
@@ -30,6 +31,7 @@ public class Seat {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private java.util.List<Reservation> reservations =
             new java.util.ArrayList<>();
 
