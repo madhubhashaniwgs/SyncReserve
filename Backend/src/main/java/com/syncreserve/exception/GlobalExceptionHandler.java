@@ -111,4 +111,21 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
     }
+
+
+    @ExceptionHandler(UnauthorizedReservationAccessException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedReservationAccess(
+            UnauthorizedReservationAccessException exception
+    ) {
+
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
 }

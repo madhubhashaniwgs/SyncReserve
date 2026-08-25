@@ -14,6 +14,10 @@ import com.syncreserve.exception.ResourceNotFoundException;
 import com.syncreserve.dto.ReservationResponse;
 import java.util.List;
 import java.time.LocalDateTime;
+import com.syncreserve.entity.User;
+import com.syncreserve.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.syncreserve.exception.UnauthorizedReservationAccessException;
 
 @Service
 public class ReservationService {
@@ -21,15 +25,18 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final EventRepository eventRepository;
     private final SeatRepository seatRepository;
+    private final UserRepository userRepository;
 
     public ReservationService(
             ReservationRepository reservationRepository,
             EventRepository eventRepository,
-            SeatRepository seatRepository
+            SeatRepository seatRepository,
+            UserRepository userRepository
     ) {
         this.reservationRepository = reservationRepository;
         this.eventRepository = eventRepository;
         this.seatRepository = seatRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -63,8 +70,11 @@ public class ReservationService {
             );
         }
 
+        User currentUser = getCurrentUser();
+
         Reservation reservation = new Reservation();
 
+        reservation.setUser(currentUser);
         reservation.setEvent(event);
         reservation.setSeat(seat);
         reservation.setReservedAt(LocalDateTime.now());
@@ -85,6 +95,8 @@ public class ReservationService {
     @Transactional
     public void cancelReservation(Long reservationId) {
 
+        User currentUser = getCurrentUser();
+
         Reservation reservation = reservationRepository
                 .findById(reservationId)
                 .orElseThrow(() ->
@@ -92,6 +104,14 @@ public class ReservationService {
                                 "Reservation not found"
                         )
                 );
+
+        if (!reservation.getUser().getId()
+                .equals(currentUser.getId())) {
+
+            throw new UnauthorizedReservationAccessException(
+                    "You are not allowed to cancel this reservation"
+            );
+        }
 
         reservationRepository.delete(reservation);
     }
@@ -135,5 +155,31 @@ public class ReservationService {
                 reservation.getSeat().getSeatNumber(),
                 reservation.getReservedAt()
         );
+    }
+
+    private User getCurrentUser() {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+    }
+
+    public List<ReservationResponse> getMyReservations() {
+
+        User currentUser = getCurrentUser();
+
+        return reservationRepository
+                .findByUserId(currentUser.getId())
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 }

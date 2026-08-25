@@ -1,5 +1,7 @@
 package com.syncreserve.controller;
 
+import com.syncreserve.dto.LoginRequest;
+import com.syncreserve.dto.LoginResponse;
 import com.syncreserve.dto.RegisterRequest;
 import com.syncreserve.dto.RegisterResponse;
 import com.syncreserve.service.AuthService;
@@ -18,6 +20,7 @@ public class AuthController {
         this.authService = authService;
     }
 
+    //register
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(
             @Valid @RequestBody RegisterRequest request
@@ -29,5 +32,19 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    // LOGIN
+
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+
+        LoginResponse response =
+                authService.login(request);
+
+        return ResponseEntity.ok(response);
     }
 }
