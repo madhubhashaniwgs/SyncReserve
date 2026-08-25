@@ -9,6 +9,7 @@ import com.syncreserve.repository.ReservationRepository;
 import com.syncreserve.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.syncreserve.exception.SeatAlreadyReservedException;
 
 import java.time.LocalDateTime;
 
@@ -55,7 +56,7 @@ public class ReservationService {
                 );
 
         if (alreadyReserved) {
-            throw new RuntimeException(
+            throw new SeatAlreadyReservedException(
                     "Seat is already reserved"
             );
         }
