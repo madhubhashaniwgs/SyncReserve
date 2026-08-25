@@ -3,8 +3,6 @@ package com.syncreserve.repository;
 import com.syncreserve.entity.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 import java.util.List;
 
 public interface ReservationRepository
@@ -16,4 +14,6 @@ public interface ReservationRepository
     );
 
     List<Reservation> findByEventId(Long eventId);
+
+    List<Reservation> findByUserId(Long userId);
 }

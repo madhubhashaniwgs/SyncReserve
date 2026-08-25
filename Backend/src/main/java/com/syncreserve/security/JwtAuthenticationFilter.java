@@ -32,17 +32,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader =
                 request.getHeader("Authorization");
 
+        System.out.println(
+                "Authorization Header: " + authorizationHeader
+        );
+
         if (authorizationHeader == null ||
                 !authorizationHeader.startsWith("Bearer ")) {
+
+            System.out.println("No Bearer token found");
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token =
-                authorizationHeader.substring(7);
+        String token = authorizationHeader.substring(7);
 
         try {
+
+            System.out.println("JWT received");
 
             if (jwtService.isTokenValid(token)) {
 
@@ -54,6 +61,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String role =
                         claims.get("role", String.class);
+
+                System.out.println(
+                        "JWT valid for user: " + email
+                );
+
+                System.out.println(
+                        "User role: " + role
+                );
 
                 SimpleGrantedAuthority authority =
                         new SimpleGrantedAuthority(
@@ -70,12 +85,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authentication);
+
+                System.out.println(
+                        "Authentication added to SecurityContext"
+                );
+
+            } else {
+
+                System.out.println("JWT is invalid");
             }
 
         } catch (Exception exception) {
 
-            SecurityContextHolder
-                    .clearContext();
+            System.out.println(
+                    "JWT ERROR: " +
+                            exception.getClass().getName()
+            );
+
+            System.out.println(
+                    "JWT ERROR MESSAGE: " +
+                            exception.getMessage()
+            );
+
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
