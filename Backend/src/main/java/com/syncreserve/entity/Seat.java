@@ -25,6 +25,14 @@ public class Seat {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
+    @OneToMany(
+            mappedBy = "seat",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private java.util.List<Reservation> reservations =
+            new java.util.ArrayList<>();
+
     public Seat() {
     }
 
@@ -46,5 +54,15 @@ public class Seat {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public java.util.List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(
+            java.util.List<Reservation> reservations
+    ) {
+        this.reservations = reservations;
     }
 }

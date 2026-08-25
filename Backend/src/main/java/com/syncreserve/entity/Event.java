@@ -33,6 +33,13 @@ public class Event {
     )
     private List<Seat> seats = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "event",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Reservation> reservations = new ArrayList<>();
+
     public Event() {
     }
 
@@ -78,5 +85,13 @@ public class Event {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }
