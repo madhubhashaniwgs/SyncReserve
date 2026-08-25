@@ -16,4 +16,5 @@ public interface ReservationRepository
     List<Reservation> findByEventId(Long eventId);
 
     List<Reservation> findByUserId(Long userId);
+    void deleteByEventId(Long eventId);
 }

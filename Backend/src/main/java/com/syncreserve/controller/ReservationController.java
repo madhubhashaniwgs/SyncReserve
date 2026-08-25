@@ -2,6 +2,7 @@ package com.syncreserve.controller;
 
 import com.syncreserve.dto.ReservationRequest;
 import com.syncreserve.entity.Reservation;
+import com.syncreserve.dto.ReservationResponse;
 import com.syncreserve.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import com.syncreserve.dto.ReservationResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class ReservationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest request
     ) {
@@ -40,8 +43,11 @@ public class ReservationController {
                 .body(reservation);
     }
 
+
+
     //Get all reservations
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ReservationResponse>>
     getAllReservations() {
 
@@ -52,6 +58,7 @@ public class ReservationController {
 
     //Get reservations by event
     @GetMapping("/event/{eventId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ReservationResponse>>
     getReservationsByEvent(
             @PathVariable Long eventId
@@ -65,6 +72,7 @@ public class ReservationController {
 
     //Cancel reservation
     @DeleteMapping("/{reservationId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Void> cancelReservation(
             @PathVariable Long reservationId
     ) {
@@ -76,6 +84,7 @@ public class ReservationController {
 
     // Get current user's reservations
     @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<ReservationResponse>>
     getMyReservations() {
 
