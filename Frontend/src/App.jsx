@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
 import EventDetails from "./pages/EventDetails";
+import Reservations from "./pages/Reservations";
 
 function App() {
   return (
@@ -30,6 +31,11 @@ function App() {
       <Route
         path="/events/:eventId"
         element={<EventDetails />}
+      />
+
+      <Route
+        path="/reservations"
+        element={<Reservations />}
       />
 
 

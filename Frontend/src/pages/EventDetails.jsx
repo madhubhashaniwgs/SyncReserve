@@ -33,6 +33,8 @@ function EventDetails() {
         api.get(`/events/${eventId}/seats`),
       ]);
 
+      console.log("SEATS FROM BACKEND:", seatsResponse.data);
+
       setEvent(eventResponse.data);
       setSeats(seatsResponse.data || []);
     } catch (err) {
