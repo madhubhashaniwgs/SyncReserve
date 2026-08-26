@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
+import EventDetails from "./pages/EventDetails";
 
 function App() {
   return (
@@ -26,7 +27,10 @@ function App() {
         element={<Events />}
       />
 
-
+      <Route
+        path="/events/:eventId"
+        element={<EventDetails />}
+      />
 
 
     </Routes>
