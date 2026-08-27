@@ -97,7 +97,7 @@ public class SecurityConfig {
 
                         // Admin-only endpoints
                         .requestMatchers(
-                                "/api/admin/**"
+                                "/api/admin/**
                         ).hasRole("ADMIN")
 
                         // Authenticated users
