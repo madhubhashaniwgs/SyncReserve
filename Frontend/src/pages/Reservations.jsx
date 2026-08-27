@@ -12,6 +12,10 @@ function Reservations() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Custom confirmation popup
+  const [reservationToCancel, setReservationToCancel] =
+    useState(null);
+
   useEffect(() => {
     fetchReservations();
   }, []);
@@ -36,14 +40,28 @@ function Reservations() {
     }
   };
 
-  const handleCancel = async (reservationId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this reservation?"
-    );
+  // Open confirmation popup
+  const openCancelConfirmation = (reservation) => {
+    setReservationToCancel(reservation);
+  };
 
-    if (!confirmed) {
+  // Close confirmation popup
+  const closeCancelConfirmation = () => {
+    if (cancellingId !== null) {
       return;
     }
+
+    setReservationToCancel(null);
+  };
+
+  // Confirm cancellation
+  const handleConfirmCancel = async () => {
+    if (!reservationToCancel) {
+      return;
+    }
+
+    const reservationId =
+      reservationToCancel.reservationId;
 
     try {
       setCancellingId(reservationId);
@@ -55,11 +73,13 @@ function Reservations() {
       );
 
       setReservations((currentReservations) =>
-          currentReservations.filter(
-            (reservation) =>
-              reservation.reservationId !== reservationId
-          )
-        );
+        currentReservations.filter(
+          (reservation) =>
+            reservation.reservationId !== reservationId
+        )
+      );
+
+      setReservationToCancel(null);
 
       setSuccess(
         "Reservation cancelled successfully."
@@ -79,46 +99,25 @@ function Reservations() {
     }
   };
 
-  const getEventName = (reservation) => {
-    return (
-      reservation.eventName ||
-      reservation.event?.name ||
-      reservation.event?.title ||
-      `Event #${reservation.eventId}`
-    );
-  };
-
-  const getSeatName = (reservation) => {
-    return (
-      reservation.seatNumber ||
-      reservation.seatName ||
-      reservation.seat?.seatNumber ||
-      reservation.seat?.number ||
-      `Seat #${reservation.seatId}`
-    );
-  };
-
-  
-
   const formatDate = (date) => {
-  if (!date) {
-    return "Date not available";
-  }
+    if (!date) {
+      return "Date not available";
+    }
 
-  const parsedDate = new Date(date);
+    const parsedDate = new Date(date);
 
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "Invalid date";
-  }
+    if (Number.isNaN(parsedDate.getTime())) {
+      return "Invalid date";
+    }
 
-  return parsedDate.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+    return parsedDate.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="reservations-page">
@@ -207,8 +206,6 @@ function Reservations() {
 
         ) : reservations.length === 0 ? (
 
-          /* Empty */
-
           <div className="reservations-empty">
 
             <div className="empty-reservation-icon">
@@ -236,8 +233,6 @@ function Reservations() {
 
         ) : (
 
-          /* Reservation List */
-
           <div className="reservations-content">
 
             <div className="reservations-summary">
@@ -261,8 +256,10 @@ function Reservations() {
 
             <div className="reservation-list">
 
-              {reservations.map((reservation, index) => (
-                <article
+              {reservations.map(
+                (reservation, index) => (
+
+                  <article
                     className="reservation-card"
                     key={
                       reservation.reservationId ??
@@ -270,104 +267,99 @@ function Reservations() {
                     }
                   >
 
-                  {/* Event Icon */}
-                  <div className="reservation-event-icon">
-                    ◈
-                  </div>
-
-                  {/* Reservation Information */}
-                  <div className="reservation-info">
-
-                    {/* Title */}
-                    <div className="reservation-title-row">
-
-                      <div>
-                        <h2><p className="reservation-event-label">
-                          {reservation.eventName ||
-                            `Event #${reservation.eventId}`}
-                        </p> </h2>
-
-                        
-                          
-                       
-                      </div>
-
-                      <span className="reservation-status">
-                        ACTIVE
-                      </span>
-
+                    <div className="reservation-event-icon">
+                      ◈
                     </div>
 
 
-                    {/* Details */}
-                    <div className="reservation-details">
+                    <div className="reservation-info">
 
-                      {/* Event ID */}
-                      <div className="reservation-detail-item">
+                      <div className="reservation-title-row">
 
-                        <small>
-                          EVENT ID
-                        </small>
+                        <div>
+                          <p className="reservation-event-label">
+                            {reservation.eventName ||
+                              `Event #${reservation.eventId}`}
+                          </p>
+                        </div>
 
-                        <strong>
-                          #{reservation.eventId}
-                        </strong>
-
-                      </div>
-
-
-                      {/* Seat */}
-                      <div className="reservation-detail-item">
-
-                        <small>
-                          SEAT
-                        </small>
-
-                        <strong className="seat-value">
-                          {reservation.seatNumber ||
-                            `Seat #${reservation.seatId}`}
-                        </strong>
+                        <span className="reservation-status">
+                          ACTIVE
+                        </span>
 
                       </div>
 
 
+                      <div className="reservation-details">
 
-                      {/* Created At */}
-                      <div className="reservation-detail-item">
+                        <div className="reservation-detail-item">
 
-                        <small>
-                          RESERVED ON
-                        </small>
+                          <small>
+                            EVENT ID
+                          </small>
 
-                        <strong>
-                          {formatDate(reservation.reservedAt)}
-                        </strong>
+                          <strong>
+                            #{reservation.eventId}
+                          </strong>
+
+                        </div>
+
+
+                        <div className="reservation-detail-item">
+
+                          <small>
+                            SEAT
+                          </small>
+
+                          <strong className="seat-value">
+                            {reservation.seatNumber ||
+                              `Seat #${reservation.seatId}`}
+                          </strong>
+
+                        </div>
+
+
+                        <div className="reservation-detail-item">
+
+                          <small>
+                            RESERVED ON
+                          </small>
+
+                          <strong>
+                            {formatDate(
+                              reservation.reservedAt
+                            )}
+                          </strong>
+
+                        </div>
 
                       </div>
 
                     </div>
 
-                  </div>
 
+                    {/* Cancel Button */}
 
-                  {/* Cancel */}
-                  <button
-                    type="button"
-                    className="cancel-reservation-button"
-                    disabled={
-                       cancellingId === reservation.reservationId
-                    }
-                    onClick={() =>
-                      handleCancel(reservation.reservationId)
-                    }
-                  >
-                    {cancellingId === reservation.reservationId
-                      ? "Cancelling..."
-                      : "Cancel"}
-                  </button>
+                    <button
+                      type="button"
+                      className="cancel-reservation-button"
+                      disabled={
+                        cancellingId ===
+                        reservation.reservationId
+                      }
+                      onClick={() =>
+                        openCancelConfirmation(
+                          reservation
+                        )
+                      }
+                    >
+                      Cancel
+                    </button>
 
-                </article>
-              ))}
+                  </article>
+
+                )
+              )}
 
             </div>
 
@@ -375,6 +367,77 @@ function Reservations() {
         )}
 
       </main>
+
+
+      {/* ================= CANCEL CONFIRMATION MODAL ================= */}
+
+      {reservationToCancel && (
+
+        <div
+          className="cancel-modal-overlay"
+          onClick={closeCancelConfirmation}
+        >
+
+          <div
+            className="cancel-modal"
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          >
+
+            <div className="cancel-modal-icon">
+              !
+            </div>
+
+            <h2>
+              Cancel Reservation?
+            </h2>
+
+            <p>
+              Are you sure you want to cancel your
+              reservation for
+            </p>
+
+            <strong className="cancel-event-name">
+              {reservationToCancel.eventName ||
+                `Event #${reservationToCancel.eventId}`}
+            </strong>
+
+            <p className="cancel-warning">
+              This action cannot be undone.
+            </p>
+
+
+            <div className="cancel-modal-actions">
+
+              <button
+                type="button"
+                className="cancel-modal-back-button"
+                onClick={closeCancelConfirmation}
+                disabled={cancellingId !== null}
+              >
+                Keep Reservation
+              </button>
+
+
+              <button
+                type="button"
+                className="cancel-modal-confirm-button"
+                onClick={handleConfirmCancel}
+                disabled={cancellingId !== null}
+              >
+                {cancellingId !== null
+                  ? "Cancelling..."
+                  : "Yes, Cancel"}
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </div>
   );
