@@ -1,0 +1,1000 @@
+/* =========================================================
+   SYNCRESERVE - PROFILE
+   Dark Forest + Emerald + Gold
+========================================================= */
+
+.profile-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 75% 0%,
+      rgba(63, 166, 107, 0.09),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(38, 122, 75, 0.07),
+      transparent 28%
+    ),
+    #080d0a;
+
+  color: #eef5f0;
+}
+
+.profile-container {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 43px 35px 70px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+
+  margin-bottom: 35px;
+}
+
+.profile-label {
+  margin: 0 0 8px;
+
+  color: #65c98a;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+.profile-header h1 {
+  margin: 0;
+
+  color: #eef5f0;
+
+  font-size: 30px;
+  font-weight: 750;
+
+  letter-spacing: -0.8px;
+}
+
+.profile-header > div > p:last-child {
+  margin: 9px 0 0;
+
+  color: #819188;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.profile-back-button {
+  flex-shrink: 0;
+
+  padding: 11px 16px;
+
+  border: 1px solid #26382d;
+  border-radius: 9px;
+
+  background: #111a14;
+
+  color: #9aaba0;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-back-button:hover {
+  transform: translateY(-2px);
+
+  background: #16231a;
+
+  border-color: rgba(63, 166, 107, 0.30);
+
+  color: #75d395;
+}
+
+
+/* =========================================================
+   PROFILE CARD
+========================================================= */
+
+.profile-card {
+  padding: 27px;
+
+  margin-bottom: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #121c16,
+      #0f1813
+    );
+
+  border: 1px solid #233229;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================================================
+   PROFILE TOP
+========================================================= */
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+.profile-avatar {
+  width: 65px;
+  height: 65px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3fa66b,
+      #267a4b
+    );
+
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 22px rgba(38, 122, 75, 0.20);
+}
+
+.profile-main-info {
+  min-width: 0;
+}
+
+.profile-small-label {
+  margin: 0 0 6px;
+
+  color: #65c98a;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.profile-main-info h2 {
+  margin: 0;
+
+  color: #e3ece6;
+
+  font-size: 21px;
+  font-weight: 750;
+
+  letter-spacing: -0.4px;
+}
+
+.profile-main-info > p:last-child {
+  margin: 5px 0 0;
+
+  color: #758279;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.profile-divider {
+  height: 1px;
+
+  margin: 25px 0;
+
+  background: #233229;
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+.profile-details {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 14px;
+}
+
+.profile-detail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 15px 16px;
+
+  background: #0c130f;
+
+  border: 1px solid #1e2d24;
+
+  border-radius: 10px;
+}
+
+.profile-detail-item span {
+  color: #718078;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.profile-detail-item strong {
+  color: #dce8df;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-align: right;
+}
+
+
+/* =========================================================
+   ROLE
+========================================================= */
+
+.profile-role {
+  color: #d6a84f !important;
+
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  background: rgba(214, 168, 79, 0.07);
+
+  border: 1px solid rgba(214, 168, 79, 0.14);
+
+  font-size: 8px !important;
+
+  letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.profile-status {
+  color: #65c98a !important;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.profile-status::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #65c98a;
+
+  box-shadow:
+    0 0 8px rgba(101, 201, 138, 0.5);
+}
+
+
+/* =========================================================
+   SECURITY CARD
+========================================================= */
+
+.profile-security-card {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 22px 25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #121c16,
+      #0f1813
+    );
+
+  border: 1px solid #233229;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.16);
+}
+
+.security-icon {
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: rgba(63, 166, 107, 0.08);
+
+  border: 1px solid rgba(63, 166, 107, 0.15);
+
+  font-size: 18px;
+}
+
+.security-info {
+  flex: 1;
+}
+
+.security-info h2 {
+  margin: 0;
+
+  color: #dce7df;
+
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.security-info > p:last-child {
+  margin: 5px 0 0;
+
+  color: #758279;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   CHANGE PASSWORD BUTTON
+========================================================= */
+
+.change-password-button {
+  flex-shrink: 0;
+
+  padding: 10px 15px;
+
+  border: 1px solid rgba(63, 166, 107, 0.20);
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3fa66b,
+      #267a4b
+    );
+
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  text-decoration: none;
+
+  box-shadow:
+    0 7px 20px rgba(38, 122, 75, 0.15);
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+.change-password-button:hover {
+  transform: translateY(-2px);
+
+  filter: brightness(1.08);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .profile-container {
+    padding: 30px 20px 50px;
+  }
+
+  .profile-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-back-button {
+    width: 100%;
+    box-sizing: border-box;
+
+    text-align: center;
+  }
+
+  .profile-details {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-security-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .change-password-button {
+    width: 100%;
+    box-sizing: border-box;
+
+    text-align: center;
+  }
+}
+
+
+@media (max-width: 450px) {
+
+  .profile-container {
+    padding: 25px 15px 45px;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+
+  .profile-card-header {
+    align-items: flex-start;
+  }
+
+  .profile-avatar {
+    width: 55px;
+    height: 55px;
+
+    font-size: 17px;
+  }
+
+  .profile-main-info h2 {
+    font-size: 18px;
+  }
+
+  .profile-detail-item {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 7px;
+  }
+
+  .profile-detail-item strong {
+    text-align: left;
+  }
+}
+
+
+/* =========================================
+   PROFILE IMAGE
+========================================= */
+.profile-image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+  flex-shrink: 0;
+
+  background: linear-gradient(
+    135deg,
+    #22c55e,
+    #16a34a
+  );
+
+  color: white;
+
+  font-size: 28px;
+  font-weight: 800;
+
+  border: 3px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow:
+    0 10px 25px rgba(34, 197, 94, 0.2);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+
+/* =========================================
+   PROFILE IMAGE BUTTONS
+========================================= */
+
+.profile-image-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.upload-profile-button,
+.remove-profile-button {
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.upload-profile-button {
+  border: none;
+
+  background: #22c55e;
+  color: #052e16;
+}
+
+.upload-profile-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.remove-profile-button {
+  border: 1px solid rgba(248, 113, 113, 0.4);
+
+  background: rgba(248, 113, 113, 0.08);
+
+  color: #fca5a5;
+}
+
+.remove-profile-button:hover {
+  transform: translateY(-1px);
+
+  background: rgba(248, 113, 113, 0.15);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .profile-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-image-section {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================
+   REMOVE PROFILE PHOTO MODAL
+========================================= */
+
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(4, 15, 10, 0.72);
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+
+  z-index: 9999;
+
+  animation: profileModalOverlayAppear 0.2s ease;
+}
+
+@keyframes profileModalOverlayAppear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+.profile-remove-modal {
+  width: 100%;
+  max-width: 440px;
+
+  padding: 34px;
+
+  text-align: center;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #163b2b,
+      #0c2118
+    );
+
+  border:
+    1px solid
+    rgba(167, 243, 208, 0.16);
+
+  box-shadow:
+    0 30px 90px
+    rgba(0, 0, 0, 0.55);
+
+  animation: profileRemoveModalAppear 0.25s ease-out;
+}
+
+@keyframes profileRemoveModalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+/* =========================================
+   WARNING ICON
+========================================= */
+
+.profile-remove-modal-icon {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    rgba(239, 68, 68, 0.14);
+
+  border:
+    1px solid
+    rgba(248, 113, 113, 0.25);
+
+  color: #fca5a5;
+
+  font-size: 28px;
+  font-weight: 800;
+}
+
+
+/* =========================================
+   TITLE
+========================================= */
+
+.profile-remove-modal h2 {
+  margin: 0 0 12px;
+
+  color: #f5f7f2;
+
+  font-size: 24px;
+  font-weight: 750;
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.profile-remove-modal p {
+  margin: 8px 0;
+
+  color: #9caf9f;
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   WARNING TEXT
+========================================= */
+
+.profile-remove-warning {
+  color: #fca5a5 !important;
+
+  font-size: 13px !important;
+
+  margin-top: 16px !important;
+}
+
+
+/* =========================================
+   BUTTON AREA
+========================================= */
+
+.profile-modal-actions {
+  display: flex;
+
+  gap: 12px;
+
+  margin-top: 28px;
+}
+
+
+/* =========================================
+   COMMON BUTTON
+========================================= */
+
+.profile-modal-actions button {
+  flex: 1;
+
+  padding: 13px 16px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+/* =========================================
+   KEEP PHOTO
+========================================= */
+
+.profile-modal-back-button {
+  border:
+    1px solid
+    rgba(167, 243, 208, 0.18);
+
+  background:
+    rgba(255, 255, 255, 0.04);
+
+  color: #dce8df;
+}
+
+.profile-modal-back-button:hover {
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   REMOVE BUTTON
+========================================= */
+
+.profile-modal-confirm-button {
+  border: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    );
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px
+    rgba(239, 68, 68, 0.2);
+}
+
+.profile-modal-confirm-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 12px 28px
+    rgba(239, 68, 68, 0.3);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 520px) {
+
+  .profile-remove-modal {
+    padding: 28px 22px;
+  }
+
+  .profile-modal-actions {
+    flex-direction: column;
+  }
+
+}
+
+
+
+/* =========================================
+   PROFILE ALERTS
+========================================= */
+
+.profile-page-alert {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-bottom: 20px;
+  padding: 12px 14px;
+
+  border-radius: 9px;
+}
+
+.profile-page-alert span {
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.profile-page-alert p {
+  flex: 1;
+
+  margin: 0;
+
+  font-size: 9px;
+}
+
+.profile-page-alert button {
+  border: none;
+
+  background: transparent;
+
+  color: inherit;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  line-height: 1;
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.profile-page-alert.error {
+  background:
+    rgba(239, 68, 68, 0.05);
+
+  border:
+    1px solid rgba(239, 68, 68, 0.13);
+
+  color: #d99a96;
+}
+
+.profile-page-alert.error span {
+  background:
+    rgba(239, 68, 68, 0.1);
+
+  color: #efa5a0;
+}
+
+
+/* =========================================
+   SUCCESS
+========================================= */
+
+.profile-page-alert.success {
+  background:
+    rgba(63, 166, 107, 0.06);
+
+  border:
+    1px solid rgba(63, 166, 107, 0.16);
+
+  color: #8fc8a4;
+}
+
+.profile-page-alert.success span {
+  background:
+    rgba(63, 166, 107, 0.1);
+
+  color: #65c98a;
+}
+
+
+/* =========================================
+   ALERT CLOSE HOVER
+========================================= */
+
+.profile-page-alert button:hover {
+  opacity: 0.7;
+}
