@@ -1,0 +1,824 @@
+/* =========================================================
+   SYNCRESERVE ADMIN - MANAGE EVENTS
+   Dark Forest + Emerald + Gold
+========================================================= */
+
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
+
+.manage-events-main {
+  width: calc(100% - 240px);
+  min-height: 100vh;
+
+  margin-left: 240px;
+
+  box-sizing: border-box;
+
+  padding: 43px 50px 70px;
+
+  background:
+    radial-gradient(
+      circle at 75% 0%,
+      rgba(63, 166, 107, 0.09),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(38, 122, 75, 0.07),
+      transparent 28%
+    ),
+    #080d0a;
+
+  color: #eef5f0;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.manage-events-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 35px;
+}
+
+.manage-events-header > div:first-child {
+  min-width: 0;
+}
+
+.admin-label {
+  margin: 0 0 8px;
+
+  color: #65c98a;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+.manage-events-header h1 {
+  margin: 0;
+
+  color: #eef5f0;
+
+  font-size: 30px;
+  font-weight: 750;
+
+  letter-spacing: -0.9px;
+}
+
+.manage-events-header > div:first-child > p:last-child {
+  margin: 9px 0 0;
+
+  color: #819188;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.manage-events-header > .manage-events-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BACK ADMIN BUTTON
+========================================================= */
+
+.back-admin-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 11px 16px;
+
+  border: 1px solid #26382d;
+  border-radius: 9px;
+
+  background: #111a14;
+
+  color: #9aaba0;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.back-admin-button:hover {
+  transform: translateY(-2px);
+
+  background: #16231a;
+
+  border-color: rgba(63, 166, 107, 0.30);
+
+  color: #75d395;
+}
+
+
+/* =========================================================
+   CREATE EVENT BUTTON
+========================================================= */
+
+.create-event-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 11px 17px;
+
+  border: 1px solid rgba(63, 166, 107, 0.20);
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3fa66b,
+      #267a4b
+    );
+
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 7px 22px rgba(38, 122, 75, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.create-event-button:hover {
+  transform: translateY(-2px);
+
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 10px 28px rgba(38, 122, 75, 0.27);
+}
+
+
+/* =========================================================
+   ALERTS
+========================================================= */
+
+.admin-alert,
+.admin-success {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 25px;
+
+  padding: 14px 17px;
+
+  border-radius: 11px;
+}
+
+.admin-alert {
+  background:
+    rgba(239, 68, 68, 0.06);
+
+  border: 1px solid
+    rgba(239, 68, 68, 0.15);
+}
+
+.admin-success {
+  background:
+    rgba(63, 166, 107, 0.07);
+
+  border: 1px solid
+    rgba(63, 166, 107, 0.17);
+}
+
+.admin-alert > span,
+.admin-success > span {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.admin-alert > span {
+  background:
+    rgba(239, 68, 68, 0.10);
+
+  color: #efaaa5;
+}
+
+.admin-success > span {
+  background:
+    rgba(63, 166, 107, 0.12);
+
+  color: #65c98a;
+}
+
+.admin-alert p,
+.admin-success p {
+  flex: 1;
+
+  margin: 0;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.admin-alert p {
+  color: #b99794;
+}
+
+.admin-success p {
+  color: #91b29e;
+}
+
+.admin-alert button,
+.admin-success button {
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.admin-alert button {
+  color: #9c7471;
+}
+
+.admin-success button {
+  color: #668273;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.admin-loading {
+  min-height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 13px;
+
+  color: #758279;
+}
+
+.admin-loading p {
+  margin: 0;
+
+  font-size: 10px;
+}
+
+.admin-spinner {
+  width: 25px;
+  height: 25px;
+
+  border: 2px solid #26362c;
+
+  border-top-color: #65c98a;
+
+  border-radius: 50%;
+
+  animation:
+    manage-events-spin 0.8s linear infinite;
+}
+
+@keyframes manage-events-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   EVENTS LIST
+========================================================= */
+
+.manage-events-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+/* =========================================================
+   EVENT CARD
+========================================================= */
+
+.manage-event-card {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      145deg,
+      #121c16,
+      #0f1813
+    );
+
+  border: 1px solid #233229;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.16);
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.manage-event-card:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(63, 166, 107, 0.25);
+
+  background:
+    linear-gradient(
+      145deg,
+      #142019,
+      #101a14
+    );
+}
+
+
+/* =========================================================
+   EVENT ICON
+========================================================= */
+
+.manage-event-icon {
+  width: 52px;
+  height: 52px;
+
+  min-width: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background:
+    rgba(63, 166, 107, 0.08);
+
+  border: 1px solid
+    rgba(63, 166, 107, 0.14);
+
+  color: #65c98a;
+
+  font-size: 21px;
+
+  box-shadow:
+    inset 0 0 18px rgba(63, 166, 107, 0.03);
+}
+
+
+/* =========================================================
+   EVENT INFO
+========================================================= */
+
+.manage-event-info {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.manage-event-info > p {
+  margin: 0 0 6px;
+
+  color: #5fae7c;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.manage-event-info h2 {
+  margin: 0;
+
+  color: #e3ece6;
+
+  font-size: 16px;
+  font-weight: 750;
+
+  letter-spacing: -0.2px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   EVENT DETAILS
+========================================================= */
+
+.manage-event-details {
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 16px;
+
+  margin-top: 9px;
+}
+
+.manage-event-details span {
+  color: #78867d;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.manage-event-details span:first-child {
+  color: #84938a;
+}
+
+
+/* =========================================================
+   EVENT ACTIONS
+========================================================= */
+
+.manage-event-card > .manage-event-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   VIEW BUTTON
+========================================================= */
+
+.view-event-button,
+.edit-event-button,
+.delete-event-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 34px;
+
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border-radius: 8px;
+
+  font-family: inherit;
+
+  font-size: 9px;
+  font-weight: 750;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================================
+   VIEW
+========================================================= */
+
+.view-event-button {
+  background:
+    rgba(63, 166, 107, 0.08);
+
+  border: 1px solid
+    rgba(63, 166, 107, 0.16);
+
+  color: #65c98a;
+}
+
+.view-event-button:hover {
+  transform: translateY(-1px);
+
+  background:
+    rgba(63, 166, 107, 0.14);
+
+  border-color:
+    rgba(63, 166, 107, 0.30);
+
+  color: #78d99a;
+}
+
+
+/* =========================================================
+   EDIT
+========================================================= */
+
+.edit-event-button {
+  background:
+    rgba(214, 168, 79, 0.06);
+
+  border: 1px solid
+    rgba(214, 168, 79, 0.15);
+
+  color: #d6a84f;
+}
+
+.edit-event-button:hover {
+  transform: translateY(-1px);
+
+  background:
+    rgba(214, 168, 79, 0.10);
+
+  border-color:
+    rgba(214, 168, 79, 0.27);
+
+  color: #e0b964;
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+.delete-event-button {
+  background:
+    rgba(239, 68, 68, 0.06);
+
+  border: 1px solid
+    rgba(239, 68, 68, 0.13);
+
+  color: #d28f8a;
+}
+
+.delete-event-button:hover {
+  transform: translateY(-1px);
+
+  background:
+    rgba(239, 68, 68, 0.10);
+
+  border-color:
+    rgba(239, 68, 68, 0.24);
+
+  color: #e3a09a;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.admin-empty {
+  min-height: 250px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  padding: 30px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #101912,
+      #0d150f
+    );
+
+  border: 1px dashed #2b3a31;
+
+  border-radius: 12px;
+}
+
+.admin-empty h2 {
+  margin: 0 0 7px;
+
+  color: #dce7df;
+
+  font-size: 15px;
+}
+
+.admin-empty p {
+  margin: 0 0 18px;
+
+  color: #758279;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .manage-events-main {
+    padding: 35px 30px 55px;
+  }
+
+  .manage-event-card {
+    align-items: flex-start;
+  }
+
+  .manage-event-card > .manage-event-actions {
+    flex-direction: column;
+  }
+
+  .view-event-button,
+  .edit-event-button,
+  .delete-event-button {
+    width: 78px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .manage-events-main {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding: 30px 20px 50px;
+  }
+
+  .manage-events-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 18px;
+  }
+
+  .manage-events-header h1 {
+    font-size: 26px;
+  }
+
+  .manage-events-header > .manage-events-actions {
+    width: 100%;
+
+    flex-direction: column;
+  }
+
+  .back-admin-button,
+  .create-event-button {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .manage-event-card {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    padding: 18px;
+  }
+
+  .manage-event-icon {
+    width: 45px;
+    height: 45px;
+
+    min-width: 45px;
+  }
+
+  .manage-event-info h2 {
+    white-space: normal;
+  }
+
+  .manage-event-details {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 7px;
+  }
+
+  .manage-event-card > .manage-event-actions {
+    width: 100%;
+
+    flex-direction: row;
+  }
+
+  .view-event-button,
+  .edit-event-button,
+  .delete-event-button {
+    flex: 1;
+
+    width: auto;
+  }
+
+  .admin-empty {
+    padding: 25px 18px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .manage-events-main {
+    padding: 25px 15px 45px;
+  }
+
+  .manage-events-header h1 {
+    font-size: 24px;
+  }
+
+  .manage-event-card {
+    padding: 15px;
+  }
+
+  .manage-event-card > .manage-event-actions {
+    gap: 6px;
+  }
+
+  .view-event-button,
+  .edit-event-button,
+  .delete-event-button {
+    padding: 0 8px;
+
+    font-size: 8px;
+  }
+}
