@@ -183,7 +183,10 @@ public class EventService {
                 .map(seat -> new SeatResponse(
                         seat.getId(),
                         seat.getSeatNumber(),
-                        false
+                        reservationRepository.existsByEventIdAndSeatId(
+                                eventId,
+                                seat.getId()
+                        )
                 ))
                 .toList();
     }

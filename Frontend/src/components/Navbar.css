@@ -1,0 +1,342 @@
+/* =========================================
+   SYNCRESERVE NAVBAR
+   Dark Forest + Emerald + Gold
+========================================= */
+.navbar-section-title {
+  padding: 18px 16px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #9ca3af;
+}
+
+.navbar-sidebar {
+  width: 240px;
+  min-height: 100vh;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 28px 16px;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      180deg,
+      #0d1510 0%,
+      #0a100c 100%
+    );
+
+  border-right: 1px solid #1e2c23;
+
+  z-index: 100;
+}
+
+
+/* =========================================
+   BRAND
+========================================= */
+
+.navbar-brand {
+  padding: 0 13px;
+
+  margin-bottom: 48px;
+
+  color: #eef5f0;
+
+  font-size: 21px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.6px;
+}
+
+.navbar-brand span {
+  color: #65c98a;
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.navbar-nav {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.navbar-link {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px 13px;
+
+  box-sizing: border-box;
+
+  border: 1px solid transparent;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #819188;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.navbar-link:hover {
+  color: #d8e5dc;
+
+  background: #131e17;
+
+  border-color: #223229;
+}
+
+.navbar-link.active {
+  color: #75d395;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(63, 166, 107, 0.15),
+      rgba(63, 166, 107, 0.04)
+    );
+
+  border-color:
+    rgba(63, 166, 107, 0.20);
+
+  box-shadow:
+    inset 3px 0 0 #3fa66b;
+}
+
+
+/* =========================================
+   ICON
+========================================= */
+
+.navbar-icon {
+  width: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 15px;
+}
+
+
+/* =========================================
+   BOTTOM
+========================================= */
+
+.navbar-bottom {
+  margin-top: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+/* =========================================
+   USER INFO
+========================================= */
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 12px 10px;
+
+  margin-bottom: 8px;
+
+  border-top: 1px solid #1e2c23;
+
+  padding-top: 18px;
+}
+
+.navbar-avatar {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3fa66b,
+      #267a4b
+    );
+
+  color: #ffffff;
+
+  font-size: 12px;
+
+  font-weight: 800;
+}
+
+.navbar-user-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.navbar-user-info strong {
+  overflow: hidden;
+
+  color: #dce8df;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.navbar-user-info span {
+  color: #68766d;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.7px;
+}
+
+
+
+
+.navbar-avatar {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.navbar-profile-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+.navbar-logout {
+  color: #748179;
+}
+
+.navbar-logout:hover {
+  color: #efaaa5;
+
+  background:
+    rgba(239, 68, 68, 0.05);
+
+  border-color:
+    rgba(239, 68, 68, 0.10);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 750px) {
+
+  .navbar-sidebar {
+    width: 100%;
+
+    min-height: auto;
+
+    position: relative;
+
+    padding: 18px;
+
+    border-right: none;
+
+    border-bottom:
+      1px solid #1e2c23;
+  }
+
+  .navbar-brand {
+    margin-bottom: 20px;
+  }
+
+  .navbar-nav {
+    flex-direction: row;
+
+    overflow-x: auto;
+
+    gap: 6px;
+  }
+
+  .navbar-link {
+    width: auto;
+
+    white-space: nowrap;
+  }
+
+  .navbar-bottom {
+    margin-top: 12px;
+  }
+
+  .navbar-user {
+    display: none;
+  }
+
+  .navbar-bottom .navbar-link {
+    display: none;
+  }
+}

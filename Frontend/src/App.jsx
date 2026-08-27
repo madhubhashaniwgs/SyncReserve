@@ -1,0 +1,48 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Events from "./pages/Events";
+import EventDetails from "./pages/EventDetails";
+import Reservations from "./pages/Reservations";
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/register"
+        element={<Register />}
+      />
+
+       <Route
+        path="/dashboard"
+        element={<Dashboard />} 
+      />
+
+
+      <Route
+        path="/events"
+        element={<Events />}
+      />
+
+      <Route
+        path="/events/:eventId"
+        element={<EventDetails />}
+      />
+
+      <Route
+        path="/reservations"
+        element={<Reservations />}
+      />
+
+
+    </Routes>
+
+    
+  );
+}
+
+export default App;
