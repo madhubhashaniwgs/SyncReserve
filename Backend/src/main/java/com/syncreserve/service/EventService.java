@@ -120,9 +120,10 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    // ==========================================
-    // GENERATE SEATS
-    // ==========================================
+
+// ==========================================
+// GENERATE / UPDATE SEATS
+// ==========================================
 
     @Transactional
     public void generateSeats(
@@ -139,14 +140,18 @@ public class EventService {
             );
         }
 
+        // ==========================================
+        // STEP 1 - CREATE MISSING SEATS
+        // ==========================================
+
         for (int row = 0; row < rows; row++) {
 
-            char rowLetter = (char) ('A' + row);
+            String rowLabel = getRowLabel(row);
 
             for (int number = 1; number <= seatsPerRow; number++) {
 
                 String seatNumber =
-                        rowLetter + String.valueOf(number);
+                        rowLabel + number;
 
                 boolean exists =
                         seatRepository.existsByEventIdAndSeatNumber(
@@ -166,7 +171,184 @@ public class EventService {
                 seatRepository.save(seat);
             }
         }
+
+        // ==========================================
+        // STEP 2 - REMOVE EXTRA AVAILABLE SEATS
+        // ==========================================
+
+        List<Seat> existingSeats =
+                seatRepository.findByEvent(event);
+
+        for (Seat seat : existingSeats) {
+
+            String seatNumber = seat.getSeatNumber();
+
+            // Keep seats inside new configuration
+            if (isSeatWithinConfiguration(
+                    seatNumber,
+                    rows,
+                    seatsPerRow
+            )) {
+                continue;
+            }
+
+            // ==========================================
+            // CHECK RESERVED STATUS
+            // ==========================================
+
+            boolean reserved =
+                    reservationRepository.existsByEventIdAndSeatId(
+                            eventId,
+                            seat.getId()
+                    );
+
+            if (reserved) {
+
+                throw new IllegalArgumentException(
+                        "Cannot reduce seats because seat "
+                                + seatNumber
+                                + " is already reserved."
+                );
+            }
+
+            // ==========================================
+            // DELETE AVAILABLE EXTRA SEAT
+            // ==========================================
+
+            seatRepository.delete(seat);
+        }
     }
+
+
+// ==========================================
+// GENERATE ROW LABEL
+// A, B, C ... Z, AA, AB, AC ...
+// ==========================================
+
+    private String getRowLabel(int rowIndex) {
+
+        StringBuilder label = new StringBuilder();
+
+        int number = rowIndex + 1;
+
+        while (number > 0) {
+
+            number--;
+
+            label.insert(
+                    0,
+                    (char) ('A' + (number % 26))
+            );
+
+            number /= 26;
+        }
+
+        return label.toString();
+    }
+
+
+// ==========================================
+// CHECK SEAT CONFIGURATION
+// Supports:
+// A1
+// Z10
+// AA1
+// AB20
+// AAA50
+// ==========================================
+
+    private boolean isSeatWithinConfiguration(
+            String seatNumber,
+            int rows,
+            int seatsPerRow
+    ) {
+
+        if (seatNumber == null || seatNumber.length() < 2) {
+            return false;
+        }
+
+        // ==========================================
+        // SEPARATE ROW LABEL AND SEAT NUMBER
+        // ==========================================
+
+        int splitIndex = 0;
+
+        while (
+                splitIndex < seatNumber.length()
+                        && Character.isLetter(
+                        seatNumber.charAt(splitIndex)
+                )
+        ) {
+            splitIndex++;
+        }
+
+        if (splitIndex == 0 || splitIndex == seatNumber.length()) {
+            return false;
+        }
+
+        String rowLabel =
+                seatNumber.substring(0, splitIndex);
+
+        String seatNumberPart =
+                seatNumber.substring(splitIndex);
+
+        int seatNumberValue;
+
+        try {
+
+            seatNumberValue =
+                    Integer.parseInt(seatNumberPart);
+
+        } catch (NumberFormatException e) {
+
+            return false;
+        }
+
+        // ==========================================
+        // CONVERT ROW LABEL TO ROW INDEX
+        // ==========================================
+
+        int rowIndex = getRowIndex(rowLabel);
+
+        return rowIndex >= 0
+                && rowIndex < rows
+                && seatNumberValue >= 1
+                && seatNumberValue <= seatsPerRow;
+    }
+
+
+// ==========================================
+// CONVERT ROW LABEL TO INDEX
+// A  -> 0
+// B  -> 1
+// Z  -> 25
+// AA -> 26
+// AB -> 27
+// ==========================================
+
+    private int getRowIndex(String rowLabel) {
+
+        int result = 0;
+
+        for (int i = 0; i < rowLabel.length(); i++) {
+
+            char character =
+                    Character.toUpperCase(
+                            rowLabel.charAt(i)
+                    );
+
+            if (character < 'A' || character > 'Z') {
+                return -1;
+            }
+
+            result =
+                    result * 26
+                            + (character - 'A' + 1);
+        }
+
+        return result - 1;
+    }
+
 
     // ==========================================
     // GET SEATS
