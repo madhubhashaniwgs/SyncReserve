@@ -425,3 +425,31 @@
     font-size: 28px;
   }
 }
+
+
+/* =========================================
+   FORGOT PASSWORD
+========================================= */
+
+.forgot-password-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+}
+
+.forgot-password-link a {
+  color: #94c9aa;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+.forgot-password-link a:hover {
+  color: #d4a84f;
+  text-shadow:
+    0 0 12px rgba(212, 168, 79, 0.18);
+  text-decoration: underline;
+}

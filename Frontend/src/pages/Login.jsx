@@ -43,40 +43,65 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
+
         <div className="login-header">
           <h1>SyncReserve</h1>
           <p>Sign in to your account</p>
         </div>
 
-        {error && <div className="login-error">{error}</div>}
+        {error && (
+          <div className="login-error">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form
+          onSubmit={handleSubmit}
+          className="login-form"
+        >
+
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">
+              Email
+            </label>
 
             <input
               id="email"
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
               disabled={isLoading}
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">
+              Password
+            </label>
 
             <input
               id="password"
               type="password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
               disabled={isLoading}
               required
             />
+          </div>
+
+          {/* FORGOT PASSWORD */}
+
+          <div className="forgot-password-link">
+            <Link to="/forgot-password">
+              Forgot your password?
+            </Link>
           </div>
 
           <button
@@ -84,14 +109,23 @@ function Login() {
             className="login-button"
             disabled={isLoading}
           >
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading
+              ? "Signing in..."
+              : "Sign In"}
           </button>
+
         </form>
 
         <div className="register-link">
-          <span>Don't have an account?</span>{" "}
-          <Link to="/register">Create account</Link>
+          <span>
+            Don't have an account?
+          </span>{" "}
+
+          <Link to="/register">
+            Create account
+          </Link>
         </div>
+
       </div>
     </div>
   );
