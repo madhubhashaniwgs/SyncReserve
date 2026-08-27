@@ -1,0 +1,527 @@
+/* =========================================================
+   SYNCRESERVE ADMIN - CREATE EVENT
+
+   Dark Forest + Emerald + Gold
+========================================================= */
+
+.create-event-main {
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  margin-left: 240px;
+  box-sizing: border-box;
+
+  padding: 43px 50px 70px;
+
+  background:
+    radial-gradient(
+      circle at 75% 0%,
+      rgba(63, 166, 107, 0.09),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(38, 122, 75, 0.07),
+      transparent 28%
+    ),
+    #080d0a;
+
+  color: #eef5f0;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.create-event-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 30px;
+  margin-bottom: 35px;
+}
+
+.create-event-header h1 {
+  margin: 0;
+
+  color: #eef5f0;
+
+  font-size: 30px;
+  font-weight: 750;
+
+  letter-spacing: -0.9px;
+}
+
+.create-event-header > div > p:last-child {
+  margin: 9px 0 0;
+
+  color: #819188;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-label {
+  margin: 0 0 8px;
+
+  color: #65c98a;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-admin-button {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  padding: 11px 16px;
+
+  border: 1px solid #26382d;
+  border-radius: 9px;
+
+  background: #111a14;
+
+  color: #9aaba0;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.back-admin-button:hover {
+  transform: translateY(-2px);
+
+  background: #16231a;
+
+  border-color: rgba(63, 166, 107, 0.30);
+
+  color: #75d395;
+}
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.create-event-alert {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 25px;
+  padding: 14px 17px;
+
+  border-radius: 11px;
+
+  background: rgba(239, 68, 68, 0.06);
+
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.create-event-alert > span {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(239, 68, 68, 0.10);
+
+  color: #efaaa5;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.create-event-alert p {
+  flex: 1;
+
+  margin: 0;
+
+  color: #b99794;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.create-event-alert button {
+  border: none;
+
+  background: transparent;
+
+  color: #9c7471;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  line-height: 1;
+}
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.create-event-card {
+  max-width: 900px;
+
+  margin: 0 auto;
+
+  padding: 27px;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      145deg,
+      #121c16,
+      #0f1813
+    );
+
+  border: 1px solid #233229;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.16);
+}
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.create-event-card-header {
+  margin-bottom: 27px;
+
+  padding-bottom: 21px;
+
+  border-bottom: 1px solid #202e26;
+}
+
+.create-event-card-header h2 {
+  margin: 0;
+
+  color: #e3ece6;
+
+  font-size: 18px;
+  font-weight: 750;
+
+  letter-spacing: -0.3px;
+}
+
+.create-event-card-header p:last-child {
+  margin: 7px 0 0;
+
+  color: #758279;
+
+  font-size: 10px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.create-event-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.form-group label {
+  color: #8c9b91;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #2a3b31;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #0c130f;
+
+  color: #e3ece6;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group input {
+  padding: 12px 13px;
+}
+
+.form-group textarea {
+  min-height: 115px;
+
+  padding: 12px 13px;
+
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #4f5e55;
+}
+
+.form-group input:hover,
+.form-group textarea:hover {
+  border-color: #355040;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: rgba(63, 166, 107, 0.55);
+
+  box-shadow:
+    0 0 0 3px rgba(63, 166, 107, 0.08);
+}
+
+/* =========================================================
+   DATE INPUT
+========================================================= */
+
+.form-group input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.create-event-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 8px;
+
+  padding-top: 21px;
+
+  border-top: 1px solid #202e26;
+}
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+.cancel-event-button {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 39px;
+
+  padding: 0 18px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #2a3b31;
+
+  border-radius: 9px;
+
+  background: #111a14;
+
+  color: #8c9b91;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cancel-event-button:hover {
+  background: #16231a;
+
+  border-color: #355040;
+
+  color: #dce8df;
+}
+
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+
+.save-event-button {
+  min-height: 39px;
+
+  padding: 0 20px;
+
+  border: 1px solid rgba(63, 166, 107, 0.20);
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3fa66b,
+      #267a4b
+    );
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 10px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 22px rgba(38, 122, 75, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.save-event-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 10px 28px rgba(38, 122, 75, 0.27);
+}
+
+.save-event-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.save-event-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .create-event-main {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding: 35px 30px 55px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+  .create-event-main {
+    padding: 30px 20px 50px;
+  }
+
+  .create-event-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 18px;
+  }
+
+  .create-event-header h1 {
+    font-size: 26px;
+  }
+
+  .back-admin-button {
+    width: 100%;
+
+    justify-content: center;
+
+    box-sizing: border-box;
+  }
+
+  .create-event-card {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .create-event-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-event-button,
+  .save-event-button {
+    width: 100%;
+  }
+}
