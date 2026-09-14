@@ -1,6 +1,7 @@
 package com.syncreserve.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ChangePasswordRequest {
@@ -9,7 +10,11 @@ public class ChangePasswordRequest {
     private String currentPassword;
 
     @NotBlank
-    @Size(min = 6, message = "Password must contain at least 6 characters")
+        @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+        @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+            message = "Password must contain uppercase, lowercase, and a number"
+        )
     private String newPassword;
 
     public ChangePasswordRequest() {
