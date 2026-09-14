@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
-import "./EventDetails.css";
+import "../styles/EventDetails.css";
 
 function EventDetails() {
   const { eventId } = useParams();

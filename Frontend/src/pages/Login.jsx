@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./Login.css";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/Login.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -45,7 +46,12 @@ function Login() {
       <div className="login-card">
 
         <div className="login-header">
-          <h1>SyncReserve</h1>
+          <img
+            src={logo}
+            alt="SyncReserve logo"
+            className="auth-logo"
+          />
+          <h1><span>Sync</span>Reserve</h1>
           <p>Sign in to your account</p>
         </div>
 
@@ -74,6 +80,7 @@ function Login() {
                 setEmail(e.target.value)
               }
               disabled={isLoading}
+              maxLength={150}
               required
             />
           </div>

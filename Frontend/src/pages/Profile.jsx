@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./Profile.css";
+import api from "../api/axios";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/Profile.css";
 
 function Profile() {
   const user = JSON.parse(
@@ -19,6 +21,35 @@ function Profile() {
     text: "",
   });
 
+  useEffect(() => {
+    const loadProfileImage = async () => {
+      try {
+        const response = await api.get("/auth/profile/image");
+        const imagePath = response.data.profileImage || "";
+        const image = imagePath
+          ? `http://localhost:8080${imagePath}`
+          : "";
+
+        setProfileImage(image);
+
+        if (image) {
+          localStorage.setItem("profileImage", image);
+        } else {
+          localStorage.removeItem("profileImage");
+        }
+
+        window.dispatchEvent(new Event("profileImageUpdated"));
+      } catch {
+        setProfileMessage({
+          type: "error",
+          text: "Unable to load your profile photo.",
+        });
+      }
+    };
+
+    loadProfileImage();
+  }, []);
+
   const name = user.name || "User";
   const email = user.email || "No email available";
   const role = user.role || "USER";
@@ -35,49 +66,73 @@ function Profile() {
   // CHANGE PROFILE PHOTO
   // =====================================================
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files?.[0];
 
     if (!file) {
       return;
     }
 
-    if (!file.type.startsWith("image/")) {
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
       setProfileMessage({
         type: "error",
-        text: "Please select a valid image file.",
+        text: "Only JPG, JPEG, PNG, and WebP images are allowed.",
       });
-
       event.target.value = "";
       return;
     }
 
-    const reader = new FileReader();
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileMessage({
+        type: "error",
+        text: "Image size must not exceed 5MB.",
+      });
+      event.target.value = "";
+      return;
+    }
 
-    reader.onloadend = () => {
-      const imageData = reader.result;
+    const formData = new FormData();
+    formData.append("file", file);
 
-      setProfileImage(imageData);
-
-      localStorage.setItem(
-        "profileImage",
-        imageData
+    try {
+      const response = await api.post(
+        "/auth/profile/image",
+        formData
       );
+      const imagePath = response.data.profileImage || "";
+      const image = imagePath
+        ? `http://localhost:8080${imagePath}`
+        : "";
 
-      window.dispatchEvent(
-        new Event("profileImageUpdated")
-      );
+      setProfileImage(image);
 
+      if (image) {
+        localStorage.setItem("profileImage", image);
+      } else {
+        localStorage.removeItem("profileImage");
+      }
+
+      window.dispatchEvent(new Event("profileImageUpdated"));
       setProfileMessage({
         type: "success",
         text: "Profile photo updated successfully.",
       });
-    };
-
-    reader.readAsDataURL(file);
-
-    // Same image eka again select karanna puluwan
-    event.target.value = "";
+    } catch (error) {
+      setProfileMessage({
+        type: "error",
+        text:
+          error.response?.data?.message ||
+          "Unable to save your profile photo.",
+      });
+    } finally {
+      event.target.value = "";
+    }
   };
 
 
@@ -103,21 +158,25 @@ function Profile() {
   // CONFIRM REMOVE PHOTO
   // =====================================================
 
-  const handleConfirmRemove = () => {
-    setProfileImage("");
+  const handleConfirmRemove = async () => {
+    try {
+      await api.delete("/auth/profile/image");
 
-    localStorage.removeItem("profileImage");
+      setProfileImage("");
+      localStorage.removeItem("profileImage");
+      window.dispatchEvent(new Event("profileImageUpdated"));
+      setShowRemoveModal(false);
 
-    window.dispatchEvent(
-      new Event("profileImageUpdated")
-    );
-
-    setShowRemoveModal(false);
-
-    setProfileMessage({
-      type: "success",
-      text: "Profile photo removed successfully.",
-    });
+      setProfileMessage({
+        type: "success",
+        text: "Profile photo removed successfully.",
+      });
+    } catch {
+      setProfileMessage({
+        type: "error",
+        text: "Unable to remove your profile photo.",
+      });
+    }
   };
 
 
@@ -145,6 +204,12 @@ function Profile() {
         <div className="profile-header">
 
           <div>
+
+            <img
+              src={logo}
+              alt="SyncReserve logo"
+              className="page-logo"
+            />
 
             <p className="profile-label">
               ACCOUNT
@@ -246,7 +311,7 @@ function Profile() {
                 <input
                   id="profile-image-input"
                   type="file"
-                  accept="image/*"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                   onChange={handleImageChange}
                   hidden
                 />

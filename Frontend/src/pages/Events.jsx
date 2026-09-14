@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
-import "./Events.css";
+import "../styles/Events.css";
 
 function Events() {
   const [events, setEvents] = useState([]);

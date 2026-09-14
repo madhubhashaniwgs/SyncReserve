@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
-import "./Reservations.css";
+import "../styles/Reservations.css";
 
 function Reservations() {
   const [reservations, setReservations] = useState([]);
