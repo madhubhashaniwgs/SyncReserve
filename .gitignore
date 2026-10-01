@@ -77,6 +77,9 @@ Thumbs.db
 .env.*
 !.env.example
 
+# Local Spring configuration
+Backend/src/main/resources/application-local.properties
+
 
 # ------------------------------------------
 # Logs
