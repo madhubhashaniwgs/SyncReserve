@@ -55,13 +55,6 @@ function AdminDashboard() {
     0
   );
 
-  const reservedSeats = reservations.length;
-
-  const availableSeats = Math.max(
-    totalSeats - reservedSeats,
-    0
-  );
-
   return (
     <div className="admin-dashboard-page">
 

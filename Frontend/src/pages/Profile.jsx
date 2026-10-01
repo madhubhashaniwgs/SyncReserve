@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import { SERVER_BASE_URL } from "../api/config";
 import logo from "../assets/syncreserve_logo.png";
 import "../styles/Profile.css";
 
@@ -27,7 +28,7 @@ function Profile() {
         const response = await api.get("/auth/profile/image");
         const imagePath = response.data.profileImage || "";
         const image = imagePath
-          ? `http://localhost:8080${imagePath}`
+          ? `${SERVER_BASE_URL}${imagePath}`
           : "";
 
         setProfileImage(image);
@@ -107,7 +108,7 @@ function Profile() {
       );
       const imagePath = response.data.profileImage || "";
       const image = imagePath
-        ? `http://localhost:8080${imagePath}`
+        ? `${SERVER_BASE_URL}${imagePath}`
         : "";
 
       setProfileImage(image);

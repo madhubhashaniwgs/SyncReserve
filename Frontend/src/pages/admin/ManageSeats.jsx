@@ -136,10 +136,6 @@ function ManageSeats() {
       return 0;
     }
 
-    const getRowLabel = (seatNumber) => {
-      return seatNumber.match(/^[A-Z]+/)?.[0] || "";
-    };
-
     const match = String(seatNumber).match(
       /\d+$/
     );
