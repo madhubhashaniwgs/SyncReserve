@@ -15,6 +15,9 @@ public interface ReservationRepository
 
     List<Reservation> findByEventId(Long eventId);
 
+        long countByEventId(Long eventId);
+
     List<Reservation> findByUserId(Long userId);
+    void deleteByUserId(Long userId);
     void deleteByEventId(Long eventId);
 }
