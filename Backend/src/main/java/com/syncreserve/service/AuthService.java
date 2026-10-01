@@ -15,7 +15,6 @@ import com.syncreserve.dto.RegisterResponse;
 import com.syncreserve.entity.User;
 import com.syncreserve.security.JwtService;
 import com.syncreserve.repository.UserRepository;
-import com.syncreserve.repository.PasswordResetTokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final Path profileDirectory;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
         private final int resetCodeLength;
         private final SecureRandom secureRandom = new SecureRandom();
@@ -47,7 +45,6 @@ public class AuthService {
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            PasswordResetTokenRepository passwordResetTokenRepository,
             EmailService emailService,
                         JwtService jwtService,
                                                 @Value("${app.profile-directory:profile}") String profileDirectory,
@@ -59,7 +56,6 @@ public class AuthService {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.emailService = emailService;
         this.jwtService = jwtService;
         this.resetCodeLength = resetCodeLength;
@@ -165,11 +161,17 @@ public class AuthService {
                 String email = request.getEmail().trim().toLowerCase();
 
                 User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User not found"
-                        )
-                );
+                .orElse(null);
+
+        if (user == null) {
+            return;
+        }
+
+                LocalDateTime now = LocalDateTime.now();
+                if (user.getResetCodeSentAt() != null &&
+                                user.getResetCodeSentAt().plusMinutes(1).isAfter(now)) {
+                        return;
+                }
 
         String resetCode = generateResetCode();
 
@@ -180,8 +182,9 @@ public class AuthService {
         user.setResetTokenExpiry(null);
 
         user.setResetCodeExpiry(
-                LocalDateTime.now().plusMinutes(15)
+                now.plusMinutes(15)
         );
+        user.setResetCodeSentAt(now);
 
         userRepository.save(user);
 
@@ -220,6 +223,7 @@ public class AuthService {
         user.setResetTokenExpiry(LocalDateTime.now().plusMinutes(10));
         user.setResetCode(null);
         user.setResetCodeExpiry(null);
+        user.setResetCodeSentAt(null);
         user.setResetCodeAttempts(0);
         user.setResetCodeVerified(true);
         userRepository.save(user);

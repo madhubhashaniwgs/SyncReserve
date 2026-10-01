@@ -55,6 +55,9 @@ public class User {
     private LocalDateTime resetCodeExpiry;
 
     @JsonIgnore
+    private LocalDateTime resetCodeSentAt;
+
+    @JsonIgnore
     private Boolean resetCodeVerified;
 
     private Integer resetCodeAttempts;
@@ -144,6 +147,14 @@ public class User {
 
     public void setResetCodeExpiry(LocalDateTime resetCodeExpiry) {
         this.resetCodeExpiry = resetCodeExpiry;
+    }
+
+    public LocalDateTime getResetCodeSentAt() {
+        return resetCodeSentAt;
+    }
+
+    public void setResetCodeSentAt(LocalDateTime resetCodeSentAt) {
+        this.resetCodeSentAt = resetCodeSentAt;
     }
 
     public boolean isResetCodeVerified() {
