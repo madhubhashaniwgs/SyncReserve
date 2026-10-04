@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
-import "./ManageUsers.css";
+import "../../styles/ManageUsers.css";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]);

@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
-import "./ResetPassword.css";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/ResetPassword.css";
+import {
+  getPasswordValidationError,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from "../utils/validation";
 
 function ResetPassword() {
   const navigate = useNavigate();
-
-  const [token, setToken] = useState(
-    sessionStorage.getItem("resetToken") || ""
-  );
+  const [searchParams] = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [code, setCode] = useState("");
+  const [resetToken, setResetToken] = useState("");
+  const [codeVerified, setCodeVerified] = useState(false);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,21 +24,55 @@ function ResetPassword() {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setError("Enter a valid email address.");
+      return;
+    }
+
+    if (!/^\d{4,8}$/.test(code.trim())) {
+      setError("Enter the 4–8 digit verification code from your email.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await api.post("/auth/verify-reset-code", {
+        email: email.trim().toLowerCase(),
+        code: code.trim(),
+      });
+
+      setResetToken(response.data.resetToken);
+      setCodeVerified(true);
+      setSuccess("Code verified. Create your new password.");
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Invalid or expired verification code."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
     setSuccess("");
 
-    if (!token.trim()) {
-      setError("Reset token is required.");
+    if (!codeVerified || !resetToken) {
+      setError("Verify the code before resetting your password.");
       return;
     }
 
-    if (newPassword.length < 6) {
-      setError(
-        "Password must contain at least 6 characters."
-      );
+    const passwordError = getPasswordValidationError(newPassword);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
@@ -46,7 +87,7 @@ function ResetPassword() {
       const response = await api.post(
         "/auth/reset-password",
         {
-          token: token.trim(),
+          token: resetToken,
           newPassword: newPassword,
         }
       );
@@ -55,8 +96,6 @@ function ResetPassword() {
         response.data?.message ||
           "Password reset successfully."
       );
-
-      sessionStorage.removeItem("resetToken");
 
       setTimeout(() => {
         navigate("/login");
@@ -84,6 +123,12 @@ function ResetPassword() {
 
         <div className="reset-password-header">
 
+          <img
+            src={logo}
+            alt="SyncReserve logo"
+            className="auth-logo"
+          />
+
           <h1>SyncReserve</h1>
 
           <p>
@@ -104,34 +149,70 @@ function ResetPassword() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="reset-password-form"
-        >
-
-          {!sessionStorage.getItem("resetToken") && (
+        {!codeVerified ? (
+          <form
+            onSubmit={handleVerifyCode}
+            className="reset-password-form"
+          >
             <div className="form-group">
 
-              <label htmlFor="token">
-                Reset Token
+              <label htmlFor="email">
+                Email Address
               </label>
 
               <input
-                id="token"
-                type="text"
-                placeholder="Enter your reset token"
-                value={token}
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
                 onChange={(e) =>
-                  setToken(e.target.value)
+                  setEmail(e.target.value)
                 }
                 disabled={isLoading}
+                maxLength={150}
                 required
               />
 
             </div>
-          )}
 
-          <div className="form-group">
+            <div className="form-group">
+
+              <label htmlFor="code">
+                Verification Code
+              </label>
+
+              <input
+                id="code"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="Enter the code from your email"
+                value={code}
+                onChange={(e) =>
+                  setCode(e.target.value.replace(/\D/g, "").slice(0, 8))
+                }
+                disabled={isLoading}
+                minLength={4}
+                maxLength={8}
+                required
+              />
+
+            </div>
+
+            <button
+              type="submit"
+              className="reset-password-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Verifying..." : "Verify Code"}
+            </button>
+          </form>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="reset-password-form"
+          >
+            <div className="form-group">
 
             <label htmlFor="newPassword">
               New Password
@@ -147,12 +228,13 @@ function ResetPassword() {
               }
               disabled={isLoading}
               required
-              minLength={6}
+              minLength={PASSWORD_MIN_LENGTH}
+              maxLength={PASSWORD_MAX_LENGTH}
             />
 
-          </div>
+            </div>
 
-          <div className="form-group">
+            <div className="form-group">
 
             <label htmlFor="confirmPassword">
               Confirm New Password
@@ -168,22 +250,24 @@ function ResetPassword() {
               }
               disabled={isLoading}
               required
-              minLength={6}
+              minLength={PASSWORD_MIN_LENGTH}
+              maxLength={PASSWORD_MAX_LENGTH}
             />
 
-          </div>
+            </div>
 
-          <button
-            type="submit"
-            className="reset-password-button"
-            disabled={isLoading}
-          >
-            {isLoading
-              ? "Resetting password..."
-              : "Reset Password"}
-          </button>
+            <button
+              type="submit"
+              className="reset-password-button"
+              disabled={isLoading}
+            >
+              {isLoading
+                ? "Resetting password..."
+                : "Reset Password"}
+            </button>
 
-        </form>
+          </form>
+        )}
 
         <div className="reset-password-footer">
 

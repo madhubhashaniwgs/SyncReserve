@@ -3,15 +3,18 @@ package com.syncreserve.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
 public class CreateEventRequest {
 
     @NotBlank(message = "Event name is required")
+    @Size(max = 150, message = "Event name must not exceed 150 characters")
     private String name;
 
     @NotBlank(message = "Event description is required")
+    @Size(max = 2000, message = "Event description must not exceed 2000 characters")
     private String description;
 
     @NotNull(message = "Event date is required")
@@ -19,6 +22,7 @@ public class CreateEventRequest {
     private LocalDateTime eventDate;
 
     @NotBlank(message = "Location is required")
+    @Size(max = 200, message = "Location must not exceed 200 characters")
     private String location;
 
     public CreateEventRequest() {

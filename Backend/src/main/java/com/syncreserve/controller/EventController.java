@@ -10,10 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
+@Validated
 public class EventController {
 
     private final EventService eventService;
@@ -49,7 +53,7 @@ public class EventController {
     // GET EVENT - AUTHENTICATED USERS
     @GetMapping("/{eventId}")
     public ResponseEntity<EventResponse> getEventById(
-            @PathVariable Long eventId
+            @PathVariable @Positive Long eventId
     ) {
 
         return ResponseEntity.ok(
@@ -63,7 +67,7 @@ public class EventController {
     @PutMapping("/{eventId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventResponse> updateEvent(
-            @PathVariable Long eventId,
+            @PathVariable @Positive Long eventId,
             @Valid @RequestBody UpdateEventRequest request
     ) {
 
@@ -79,7 +83,7 @@ public class EventController {
     @DeleteMapping("/{eventId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEvent(
-            @PathVariable Long eventId
+            @PathVariable @Positive Long eventId
     ) {
 
         eventService.deleteEvent(eventId);
@@ -91,9 +95,9 @@ public class EventController {
     @PostMapping("/{eventId}/seats")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> generateSeats(
-            @PathVariable Long eventId,
-            @RequestParam int rows,
-            @RequestParam int seatsPerRow
+            @PathVariable @Positive Long eventId,
+            @RequestParam @Positive @Max(100) int rows,
+            @RequestParam @Positive @Max(100) int seatsPerRow
     ) {
 
         eventService.generateSeats(
@@ -110,7 +114,7 @@ public class EventController {
     // GET SEATS - AUTHENTICATED USERS
     @GetMapping("/{eventId}/seats")
     public ResponseEntity<List<SeatResponse>> getSeats(
-            @PathVariable Long eventId
+            @PathVariable @Positive Long eventId
     ) {
 
         return ResponseEntity.ok(

@@ -43,6 +43,10 @@
 ========================================= */
 
 .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
   padding: 0 13px;
 
   margin-bottom: 48px;
@@ -56,7 +60,13 @@
   letter-spacing: -0.6px;
 }
 
-.navbar-brand span {
+.navbar-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.navbar-brand-name > span {
   color: #65c98a;
 }
 

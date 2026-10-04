@@ -5,7 +5,13 @@ import {
   useParams,
 } from "react-router-dom";
 import api from "../../api/axios";
-import "./EditEvent.css";
+import "../../styles/EditEvent.css";
+import {
+  EVENT_DESCRIPTION_MAX_LENGTH,
+  EVENT_LOCATION_MAX_LENGTH,
+  EVENT_NAME_MAX_LENGTH,
+  isValidFutureDate,
+} from "../../utils/validation";
 
 function EditEvent() {
   const { eventId } = useParams();
@@ -109,13 +115,33 @@ function EditEvent() {
       return;
     }
 
+    if (formData.name.trim().length > EVENT_NAME_MAX_LENGTH) {
+      setError(`Event name must not exceed ${EVENT_NAME_MAX_LENGTH} characters.`);
+      return;
+    }
+
+    if (formData.description.trim().length > EVENT_DESCRIPTION_MAX_LENGTH) {
+      setError(`Description must not exceed ${EVENT_DESCRIPTION_MAX_LENGTH} characters.`);
+      return;
+    }
+
     if (!formData.eventDate) {
       setError("Event date is required.");
       return;
     }
 
+    if (!isValidFutureDate(formData.eventDate)) {
+      setError("Event date must be in the future.");
+      return;
+    }
+
     if (!formData.location.trim()) {
       setError("Location is required.");
+      return;
+    }
+
+    if (formData.location.trim().length > EVENT_LOCATION_MAX_LENGTH) {
+      setError(`Location must not exceed ${EVENT_LOCATION_MAX_LENGTH} characters.`);
       return;
     }
 
@@ -266,6 +292,7 @@ function EditEvent() {
               onChange={handleChange}
               placeholder="Event name"
               required
+              maxLength={EVENT_NAME_MAX_LENGTH}
             />
 
           </div>
@@ -285,6 +312,7 @@ function EditEvent() {
               value={formData.description}
               onChange={handleChange}
               placeholder="Event description..."
+              maxLength={EVENT_DESCRIPTION_MAX_LENGTH}
             />
 
           </div>
@@ -306,6 +334,7 @@ function EditEvent() {
                 value={formData.eventDate}
                 onChange={handleChange}
                 required
+                min={new Date().toISOString().slice(0, 16)}
               />
 
             </div>
@@ -324,6 +353,7 @@ function EditEvent() {
                 onChange={handleChange}
                 placeholder="Event location"
                 required
+                maxLength={EVENT_LOCATION_MAX_LENGTH}
               />
 
             </div>

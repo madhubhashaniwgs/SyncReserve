@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import "./ChangePassword.css";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/ChangePassword.css";
+import {
+  getPasswordValidationError,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from "../utils/validation";
 
 function ChangePassword() {
 
@@ -56,11 +62,9 @@ function ChangePassword() {
     }
 
 
-    if (newPassword.length < 6) {
-
-      setError(
-        "New password must be at least 6 characters."
-      );
+    const passwordError = getPasswordValidationError(newPassword);
+    if (passwordError) {
+      setError(passwordError);
 
       return;
     }
@@ -148,6 +152,12 @@ function ChangePassword() {
         <div className="change-password-header">
 
           <div>
+
+            <img
+              src={logo}
+              alt="SyncReserve logo"
+              className="page-logo"
+            />
 
             <p className="profile-label">
               SECURITY
@@ -306,6 +316,8 @@ function ChangePassword() {
                   }
                   placeholder="Enter new password"
                   autoComplete="new-password"
+                  minLength={PASSWORD_MIN_LENGTH}
+                  maxLength={PASSWORD_MAX_LENGTH}
                 />
 
                 <button
@@ -320,7 +332,7 @@ function ChangePassword() {
               </div>
 
               <small>
-                Password must contain at least 6 characters.
+                Use 8–100 characters with uppercase, lowercase, and a number.
               </small>
 
             </div>

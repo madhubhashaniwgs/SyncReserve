@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
-import "./Dashboard.css";
+import "../styles/Dashboard.css";
 
 function Dashboard() {
   const { user } = useAuth();
