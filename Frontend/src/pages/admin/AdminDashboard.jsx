@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import api from "../../api/axios";
-import "./AdminDashboard.css";
+import "../../styles/AdminDashboard.css";
 
 function AdminDashboard() {
   const [events, setEvents] = useState([]);

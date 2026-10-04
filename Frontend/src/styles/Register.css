@@ -65,9 +65,17 @@
   margin-bottom: 30px;
 }
 
+.auth-logo {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 14px;
+}
+
 .register-logo {
   margin-bottom: 34px;
-
+  margin-left: 120px;
   font-size: 21px;
 
   font-weight: 800;

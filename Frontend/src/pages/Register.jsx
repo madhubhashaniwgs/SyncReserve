@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import "./Register.css";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/Register.css";
+import {
+  getPasswordValidationError,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from "../utils/validation";
 
 function Register() {
   const navigate = useNavigate();
@@ -26,8 +32,9 @@ function Register() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    const passwordError = getPasswordValidationError(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
@@ -35,8 +42,8 @@ function Register() {
 
     try {
       await api.post("/auth/register", {
-        name,
-        email,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
         password,
       });
 
@@ -73,6 +80,11 @@ function Register() {
 
         {/* Header */}
         <div className="register-header">
+          <img
+            src={logo}
+            alt="SyncReserve logo"
+            className="auth-logo"
+          />
           <div className="register-logo">
             <span>Sync</span>Reserve
           </div>
@@ -124,6 +136,7 @@ function Register() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
+              maxLength={100}
               required
             />
 
@@ -143,6 +156,7 @@ function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              maxLength={150}
               required
             />
 
@@ -164,6 +178,8 @@ function Register() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
+                minLength={PASSWORD_MIN_LENGTH}
+                maxLength={PASSWORD_MAX_LENGTH}
                 required
               />
 
@@ -185,6 +201,8 @@ function Register() {
                   setConfirmPassword(e.target.value)
                 }
                 disabled={isLoading}
+                minLength={PASSWORD_MIN_LENGTH}
+                maxLength={PASSWORD_MAX_LENGTH}
                 required
               />
 
@@ -194,7 +212,7 @@ function Register() {
 
 
           <div className="password-hint">
-            Use at least 6 characters for your password.
+            Use 8–100 characters with uppercase, lowercase, and a number.
           </div>
 
 

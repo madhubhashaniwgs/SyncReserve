@@ -43,6 +43,13 @@
   margin-bottom: 35px;
 }
 
+.page-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
 .profile-label {
   margin: 0 0 8px;
 
@@ -545,10 +552,8 @@
   font-size: 28px;
   font-weight: 800;
 
-  border: 3px solid rgba(255, 255, 255, 0.15);
-
-  box-shadow:
-    0 10px 25px rgba(34, 197, 94, 0.2);
+  border: none;
+  box-shadow: none;
 }
 
 .profile-image {

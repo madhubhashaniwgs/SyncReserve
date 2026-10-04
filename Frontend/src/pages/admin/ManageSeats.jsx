@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
-import "./ManageSeats.css";
+import "../../styles/ManageSeats.css";
+import {
+  MAX_SEAT_ROWS,
+  MAX_SEATS_PER_ROW,
+} from "../../utils/validation";
 
 function ManageSeats() {
   const [events, setEvents] = useState([]);
@@ -328,10 +332,12 @@ function ManageSeats() {
       !Number.isInteger(newRows) ||
       !Number.isInteger(newSeatsPerRow) ||
       newRows < 1 ||
-      newSeatsPerRow < 1
+      newSeatsPerRow < 1 ||
+      newRows > MAX_SEAT_ROWS ||
+      newSeatsPerRow > MAX_SEATS_PER_ROW
     ) {
       setError(
-        "Rows and seats per row must be whole numbers greater than 0."
+        `Rows must be 1-${MAX_SEAT_ROWS} and seats per row must be 1-${MAX_SEATS_PER_ROW}.`
       );
       return;
     }
@@ -615,6 +621,7 @@ function ManageSeats() {
                 id="rows"
                 type="number"
                 min="1"
+                max={MAX_SEAT_ROWS}
                 step="1"
                 value={rows}
                 onChange={(e) =>
@@ -649,6 +656,7 @@ function ManageSeats() {
                 id="seatsPerRow"
                 type="number"
                 min="1"
+                max={MAX_SEATS_PER_ROW}
                 step="1"
                 value={seatsPerRow}
                 onChange={(e) =>

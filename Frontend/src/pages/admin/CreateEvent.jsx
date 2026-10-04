@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import "./CreateEvent.css";
+import "../../styles/CreateEvent.css";
+import {
+  EVENT_DESCRIPTION_MAX_LENGTH,
+  EVENT_LOCATION_MAX_LENGTH,
+  EVENT_NAME_MAX_LENGTH,
+  isValidFutureDate,
+} from "../../utils/validation";
 
 function CreateEvent() {
   const navigate = useNavigate();
@@ -33,13 +39,38 @@ function CreateEvent() {
       return;
     }
 
+    if (formData.name.trim().length > EVENT_NAME_MAX_LENGTH) {
+      setError(`Event name must not exceed ${EVENT_NAME_MAX_LENGTH} characters.`);
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setError("Event description is required.");
+      return;
+    }
+
+    if (formData.description.trim().length > EVENT_DESCRIPTION_MAX_LENGTH) {
+      setError(`Description must not exceed ${EVENT_DESCRIPTION_MAX_LENGTH} characters.`);
+      return;
+    }
+
     if (!formData.eventDate) {
       setError("Event date is required.");
       return;
     }
 
+    if (!isValidFutureDate(formData.eventDate)) {
+      setError("Event date must be in the future.");
+      return;
+    }
+
     if (!formData.location.trim()) {
       setError("Location is required.");
+      return;
+    }
+
+    if (formData.location.trim().length > EVENT_LOCATION_MAX_LENGTH) {
+      setError(`Location must not exceed ${EVENT_LOCATION_MAX_LENGTH} characters.`);
       return;
     }
 
@@ -160,6 +191,7 @@ function CreateEvent() {
               onChange={handleChange}
               placeholder="e.g. Colombo Music Festival"
               required
+              maxLength={EVENT_NAME_MAX_LENGTH}
             />
 
           </div>
@@ -179,6 +211,8 @@ function CreateEvent() {
               value={formData.description}
               onChange={handleChange}
               placeholder="Describe your event..."
+              maxLength={EVENT_DESCRIPTION_MAX_LENGTH}
+              required
             />
 
           </div>
@@ -200,6 +234,7 @@ function CreateEvent() {
                 value={formData.eventDate}
                 onChange={handleChange}
                 required
+                min={new Date().toISOString().slice(0, 16)}
               />
 
             </div>
@@ -218,6 +253,7 @@ function CreateEvent() {
                 onChange={handleChange}
                 placeholder="e.g. BMICH, Colombo"
                 required
+                maxLength={EVENT_LOCATION_MAX_LENGTH}
               />
 
             </div>

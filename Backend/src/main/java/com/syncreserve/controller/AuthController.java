@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import com.syncreserve.dto.ForgotPasswordRequest;
 import com.syncreserve.dto.ResetPasswordRequest;
 import com.syncreserve.dto.ChangePasswordRequest;
+import com.syncreserve.dto.VerifyResetCodeRequest;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RestController
@@ -59,15 +61,27 @@ public class AuthController {
             @Valid @RequestBody ForgotPasswordRequest request
     ) {
 
-        String resetToken =
-                authService.forgotPassword(request);
+        authService.forgotPassword(request);
 
         return ResponseEntity.ok(
                 Map.of(
-                        "message", "Password reset token generated",
-                        "resetToken", resetToken
+                        "message",
+                        "A verification code has been sent to your email address."
                 )
         );
+    }
+
+    @PostMapping("/verify-reset-code")
+    public ResponseEntity<Map<String, String>> verifyResetCode(
+            @Valid @RequestBody VerifyResetCodeRequest request
+    ) {
+
+        String resetToken = authService.verifyResetCode(request);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Code verified",
+                "resetToken", resetToken
+        ));
     }
 
     //reset password
@@ -102,5 +116,32 @@ public class AuthController {
                         "Password changed successfully"
                 )
         );
+    }
+
+    @GetMapping("/profile/image")
+    public ResponseEntity<Map<String, String>> getProfileImage() {
+        String imagePath = authService.getProfileImage();
+        return ResponseEntity.ok(Map.of(
+                "profileImage", imagePath == null ? "" : imagePath
+        ));
+    }
+
+    @PostMapping("/profile/image")
+    public ResponseEntity<Map<String, String>> updateProfileImage(
+            @RequestParam("file") MultipartFile file
+    ) {
+
+        String imagePath = authService.updateProfileImage(file);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Profile image saved",
+                "profileImage", imagePath
+        ));
+    }
+
+    @DeleteMapping("/profile/image")
+    public ResponseEntity<Map<String, String>> removeProfileImage() {
+        authService.removeProfileImage();
+        return ResponseEntity.ok(Map.of("message", "Profile image removed"));
     }
 }

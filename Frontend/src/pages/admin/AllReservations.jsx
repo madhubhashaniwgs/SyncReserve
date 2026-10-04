@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
-import "./AllReservations.css";
+import "../../styles/AllReservations.css";
 
 function AllReservations() {
 

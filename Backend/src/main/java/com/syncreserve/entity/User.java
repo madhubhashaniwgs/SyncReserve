@@ -37,12 +37,27 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "profile_image", columnDefinition = "TEXT")
+    private String profileImage;
+
     @JsonIgnore
     @Column(length = 255)
     private String resetToken;
 
     @JsonIgnore
     private LocalDateTime resetTokenExpiry;
+
+    @JsonIgnore
+    @Column(length = 100)
+    private String resetCode;
+
+    @JsonIgnore
+    private LocalDateTime resetCodeExpiry;
+
+    @JsonIgnore
+    private Boolean resetCodeVerified;
+
+    private Integer resetCodeAttempts;
 
     public User() {
     }
@@ -91,6 +106,14 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     public String getResetToken() {
         return resetToken;
     }
@@ -105,5 +128,37 @@ public class User {
 
     public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
         this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public String getResetCode() {
+        return resetCode;
+    }
+
+    public void setResetCode(String resetCode) {
+        this.resetCode = resetCode;
+    }
+
+    public LocalDateTime getResetCodeExpiry() {
+        return resetCodeExpiry;
+    }
+
+    public void setResetCodeExpiry(LocalDateTime resetCodeExpiry) {
+        this.resetCodeExpiry = resetCodeExpiry;
+    }
+
+    public boolean isResetCodeVerified() {
+        return Boolean.TRUE.equals(resetCodeVerified);
+    }
+
+    public void setResetCodeVerified(boolean resetCodeVerified) {
+        this.resetCodeVerified = resetCodeVerified;
+    }
+
+    public Integer getResetCodeAttempts() {
+        return resetCodeAttempts;
+    }
+
+    public void setResetCodeAttempts(Integer resetCodeAttempts) {
+        this.resetCodeAttempts = resetCodeAttempts;
     }
 }

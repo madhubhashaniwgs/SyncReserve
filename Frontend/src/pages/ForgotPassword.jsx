@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import "./ForgotPassword.css";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/ForgotPassword.css";
 
 function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [resetToken, setResetToken] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,24 +16,21 @@ function ForgotPassword() {
 
     setError("");
     setSuccess("");
-    setResetToken("");
 
     try {
       setLoading(true);
 
       const response = await api.post(
         "/auth/forgot-password",
-        { email }
+        { email: email.trim().toLowerCase() }
       );
 
       setSuccess(
         response.data?.message ||
-          "Password reset token generated."
+          "A verification code has been sent to your email address."
       );
 
-      setResetToken(
-        response.data?.resetToken || ""
-      );
+      navigate(`/reset-password?email=${encodeURIComponent(email.trim().toLowerCase())}`);
     } catch (err) {
       console.error(
         "Forgot password failed:",
@@ -55,6 +53,12 @@ function ForgotPassword() {
 
         <div className="forgot-password-header">
 
+          <img
+            src={logo}
+            alt="SyncReserve logo"
+            className="auth-logo"
+          />
+
           <div className="forgot-password-icon">
             🔐
           </div>
@@ -67,7 +71,7 @@ function ForgotPassword() {
 
           <p>
             Enter your registered email address
-            to generate a password reset token.
+            to receive a verification code.
           </p>
 
         </div>
@@ -112,6 +116,7 @@ function ForgotPassword() {
                 setEmail(e.target.value)
               }
               placeholder="Enter your email"
+              maxLength={150}
               required
             />
 
@@ -123,39 +128,11 @@ function ForgotPassword() {
             disabled={loading}
           >
             {loading
-              ? "Generating..."
-              : "Generate Reset Token"}
+              ? "Sending..."
+              : "Send Verification Code"}
           </button>
 
         </form>
-
-        {resetToken && (
-          <div className="reset-token-box">
-
-            <div>
-              <span>RESET TOKEN</span>
-
-              <p>
-                Copy this token and use it on
-                the reset password page.
-              </p>
-            </div>
-
-            <code>
-              {resetToken}
-            </code>
-
-            <Link
-              to={`/reset-password?token=${encodeURIComponent(
-                resetToken
-              )}`}
-              className="continue-reset-button"
-            >
-              Continue to Reset Password →
-            </Link>
-
-          </div>
-        )}
 
         <div className="auth-footer">
 

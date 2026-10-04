@@ -1,7 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import "./Navbar.css";
+import api from "../api/axios";
+import logo from "../assets/syncreserve_logo.png";
+import "../styles/Navbar.css";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -20,10 +22,37 @@ function Navbar() {
       );
     };
 
+    const loadProfileImage = async () => {
+      if (!user) {
+        setProfileImage("");
+        return;
+      }
+
+      try {
+        const response = await api.get("/auth/profile/image");
+        const imagePath = response.data.profileImage || "";
+        const image = imagePath
+          ? `http://localhost:8080${imagePath}`
+          : "";
+
+        setProfileImage(image);
+
+        if (image) {
+          localStorage.setItem("profileImage", image);
+        } else {
+          localStorage.removeItem("profileImage");
+        }
+      } catch {
+        setProfileImage("");
+      }
+    };
+
     window.addEventListener(
       "profileImageUpdated",
       handleProfileImageChange
     );
+
+    loadProfileImage();
 
     return () => {
       window.removeEventListener(
@@ -31,7 +60,7 @@ function Navbar() {
         handleProfileImageChange
       );
     };
-  }, []);
+  }, [user]);
 
   // =====================================================
   // LOGOUT
@@ -73,7 +102,14 @@ function Navbar() {
       ===================================================== */}
 
       <div className="navbar-brand">
-        <span>Sync</span>Reserve
+        <img
+          src={logo}
+          alt="SyncReserve logo"
+          className="navbar-logo"
+        />
+        <span className="navbar-brand-name">
+          <span>Sync</span>Reserve
+        </span>
       </div>
 
 
