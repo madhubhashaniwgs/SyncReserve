@@ -1,0 +1,6 @@
+DB_USERNAME=postgres
+DB_PASSWORD=Saranga$2001Madhu
+MAIL_USERNAME=mockmate.app@gmail.com
+MAIL_PASSWORD=nqjedcdeffwhkbrh
+JWT_SECRET=SyncReserveSecretKeyForJwtAuthentication2026VeryLongSecret
+

@@ -394,6 +394,10 @@ public class EventService {
     private EventResponse mapToResponse(Event event) {
 
         int totalSeats = event.getSeats().size();
+        int reservedSeats = Math.toIntExact(
+            reservationRepository.countByEventId(event.getId())
+        );
+        int availableSeats = Math.max(totalSeats - reservedSeats, 0);
 
         return new EventResponse(
                 event.getId(),
@@ -402,7 +406,7 @@ public class EventService {
                 event.getEventDate(),
                 event.getLocation(),
                 totalSeats,
-                totalSeats
+                availableSeats
         );
     }
 }
