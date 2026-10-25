@@ -32,24 +32,40 @@ jobs:
           command_timeout: 15m
           script: |
             set -eu
+
             cd /home/ec2-user/SyncReserve
 
-            echo "Checking production configuration..."
-
+            echo "Fetching latest main branch..."
             git fetch origin main
 
-            if ! git diff --quiet HEAD origin/main -- docker-compose.yml docker-compose.aws.yml Frontend/nginx.conf; then
-              echo "ERROR: Production files differ from the expected Git version."
-              echo "Deployment stopped to protect the live website."
-              exit 1
-            fi
+            BACKUP_DIR="/home/ec2-user/SyncReserve-backups/$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "$BACKUP_DIR"
 
+            echo "Backing up production configuration..."
+            cp Frontend/nginx.conf "$BACKUP_DIR/nginx.conf"
+            cp docker-compose.aws.yml "$BACKUP_DIR/docker-compose.aws.yml"
+            cp docker-compose.yml "$BACKUP_DIR/docker-compose.yml"
+
+            echo "Checking for local configuration changes..."
             if ! git diff --quiet -- docker-compose.yml docker-compose.aws.yml Frontend/nginx.conf; then
-              echo "ERROR: Local production configuration has uncommitted changes."
-              echo "Deployment stopped to protect the live website."
-              exit 1
+              echo "Saving a patch of local configuration changes..."
+              git diff -- docker-compose.yml docker-compose.aws.yml Frontend/nginx.conf > "$BACKUP_DIR/local-config.patch"
             fi
 
-            echo "Configuration checks passed."
-            echo "Automatic deployment is intentionally paused until the production branch and configuration are reconciled."
-            exit 1
+            echo "Aligning production configuration with main..."
+            git restore --source=origin/main -- docker-compose.yml docker-compose.aws.yml Frontend/nginx.conf
+
+            git switch -C main origin/main
+            echo "Validating AWS Docker Compose configuration..."
+            docker compose -f docker-compose.yml -f docker-compose.aws.yml config -q
+
+            echo "Building and updating backend and frontend..."
+            docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build backend frontend
+
+            echo "Checking container status..."
+            docker compose -f docker-compose.yml -f docker-compose.aws.yml ps
+
+            echo "Checking HTTPS website..."
+            curl --fail --silent --show-error --max-time 30 https://syncreserve.duckdns.org/ -o /dev/null
+
+            echo "Deployment completed successfully."
