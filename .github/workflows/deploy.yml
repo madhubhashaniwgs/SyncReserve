@@ -1,0 +1,70 @@
+
+name: SyncReserve CD
+
+on:
+  workflow_run:
+    workflows: ["SyncReserve CI"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: syncreserve-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS EC2
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            set -eu
+
+            cd /home/ec2-user/SyncReserve
+
+            echo "Fetching latest main..."
+            git fetch origin main
+
+            BACKUP_DIR="/home/ec2-user/SyncReserve-backups/$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "$BACKUP_DIR"
+
+            echo "Backing up production configuration..."
+            cp Frontend/nginx.conf "$BACKUP_DIR/nginx.conf"
+            cp docker-compose.yml "$BACKUP_DIR/docker-compose.yml"
+            cp docker-compose.aws.yml "$BACKUP_DIR/docker-compose.aws.yml"
+
+            echo "Saving current Docker images..."
+            docker image inspect syncreserve-backend:latest >/dev/null
+            docker image inspect syncreserve-frontend:latest >/dev/null
+
+            docker tag syncreserve-backend:latest "syncreserve-backend:rollback"
+            docker tag syncreserve-frontend:latest "syncreserve-frontend:rollback"
+
+            echo "Aligning production files with main..."
+            git restore --source=origin/main -- docker-compose.yml docker-compose.aws.yml Frontend/nginx.conf
+            git switch -C main origin/main
+
+            echo "Validating production configuration..."
+            docker compose -f docker-compose.yml -f docker-compose.aws.yml config -q
+
+            echo "Building and updating application..."
+            docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build backend frontend
+
+            echo "Checking HTTPS website..."
+            curl --fail --silent --show-error --max-time 30 https://syncreserve.duckdns.org/ -o /dev/null
+
+            echo "Deployment completed successfully."
