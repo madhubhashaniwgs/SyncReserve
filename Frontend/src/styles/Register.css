@@ -240,21 +240,16 @@
 
   border-radius: 10px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #4ade80,
-      #16a34a
-    );
+  background: #29975e;;
 
-  color: #052e16;
+  color: white;
 
   font-family: inherit;
 
   font-size: 13px;
 
   font-weight: 800;
-
+  font-weight: 750;
   cursor: pointer;
 
   box-shadow:
@@ -270,7 +265,7 @@
   transform: translateY(-2px);
 
   filter: brightness(1.05);
-
+  background: #2fb773;
   box-shadow:
     0 12px 30px rgba(34, 197, 94, 0.20);
 }
