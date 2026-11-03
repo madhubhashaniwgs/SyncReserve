@@ -21,6 +21,8 @@ services:
     build:
       context: ./Backend
     container_name: syncreserve-backend
+    environment:
+      APP_FRONTEND_URLS: ${APP_FRONTEND_URLS:-http://localhost:5173}
     ports:
       - "8080:8080"
     depends_on:
