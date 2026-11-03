@@ -22,12 +22,19 @@ api.interceptors.request.use(
   }
 );
 
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const isLoginRequest = error.config?.url === "/auth/login";
 
-    if (error.response?.status === 401 && !isLoginRequest) {
+    const token = localStorage.getItem("token");
+
+    if (
+      error.response?.status === 401 &&
+      !isLoginRequest &&
+      token
+    ) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("profileImage");
@@ -40,5 +47,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;
