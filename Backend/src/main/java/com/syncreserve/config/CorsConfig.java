@@ -13,15 +13,15 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${app.frontend-url:http://localhost:5173}")
-    private String frontendUrl;
+    @Value("${app.frontend-urls:http://localhost:5173}")
+    private List<String> frontendUrls;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.setAllowedOrigins(frontendUrls);
 
         configuration.setAllowedMethods(
                 List.of(
