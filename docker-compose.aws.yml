@@ -4,6 +4,7 @@ services:
     ports: !reset []
 
   backend:
+    env_file: !reset []
     environment:
       DB_USERNAME: ${RDS_USERNAME:?Set RDS_USERNAME in .env}
       DB_PASSWORD: ${RDS_PASSWORD:?Set RDS_PASSWORD in .env}
@@ -16,7 +17,6 @@ services:
     volumes:
       - profile_data:/app/profile
 
-  
   frontend:
     build:
       args:
@@ -27,7 +27,6 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./Frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-
 
 volumes:
   profile_data:
