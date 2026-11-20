@@ -87,7 +87,19 @@ function EventDetails() {
       return "Date not available";
     }
 
-    const parsedDate = new Date(date);
+    // LocalDate serializes as "YYYY-MM-DD" - parse as local date
+    // to avoid timezone shifting the displayed day.
+    let parsedDate;
+
+    if (
+      typeof date === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ) {
+      const [year, month, day] = date.split("-").map(Number);
+      parsedDate = new Date(year, month - 1, day);
+    } else {
+      parsedDate = new Date(date);
+    }
 
     if (Number.isNaN(parsedDate.getTime())) {
       return date;
@@ -99,6 +111,32 @@ function EventDetails() {
       month: "long",
       day: "numeric",
     });
+  };
+
+  const formatTime = (time) => {
+    if (!time) {
+      return null;
+    }
+
+    // LocalTime serializes as "HH:mm:ss" or "HH:mm".
+    return String(time).slice(0, 5);
+  };
+
+  const formatPrice = (price) => {
+    if (price == null || price === "") {
+      return null;
+    }
+
+    const value = Number(price);
+
+    if (Number.isNaN(value)) {
+      return null;
+    }
+
+    return `LKR ${value.toLocaleString("en-LK", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   const getSeatNumber = (seat) => {
@@ -328,6 +366,25 @@ function EventDetails() {
 
               <div className="information-list">
 
+                {event?.category && (
+                  <div className="information-item">
+
+                    <div className="information-icon">
+                      ▦
+                    </div>
+
+                    <div>
+                      <small>CATEGORY</small>
+
+                      <strong>
+                        {event.category}
+                      </strong>
+                    </div>
+
+                  </div>
+                )}
+
+
                 <div className="information-item">
 
                   <div className="information-icon">
@@ -345,6 +402,46 @@ function EventDetails() {
                 </div>
 
 
+                {(event?.startTime || event?.endTime) && (
+                  <div className="information-item">
+
+                    <div className="information-icon">
+                      ◔
+                    </div>
+
+                    <div>
+                      <small>TIME</small>
+
+                      <strong>
+                        {formatTime(event.startTime) || "—"}
+                        {" – "}
+                        {formatTime(event.endTime) || "—"}
+                      </strong>
+                    </div>
+
+                  </div>
+                )}
+
+
+                {event?.venueName && (
+                  <div className="information-item">
+
+                    <div className="information-icon">
+                      ⌂
+                    </div>
+
+                    <div>
+                      <small>VENUE</small>
+
+                      <strong>
+                        {event.venueName}
+                      </strong>
+                    </div>
+
+                  </div>
+                )}
+
+
                 {event?.location && (
                   <div className="information-item">
 
@@ -357,6 +454,25 @@ function EventDetails() {
 
                       <strong>
                         {event.location}
+                      </strong>
+                    </div>
+
+                  </div>
+                )}
+
+
+                {formatPrice(event?.ticketPrice) && (
+                  <div className="information-item">
+
+                    <div className="information-icon">
+                      ◈
+                    </div>
+
+                    <div>
+                      <small>TICKET PRICE</small>
+
+                      <strong>
+                        {formatPrice(event.ticketPrice)}
                       </strong>
                     </div>
 

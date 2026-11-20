@@ -36,6 +36,34 @@ function ManageEvents() {
     }
   };
 
+  const formatEventDate = (dateValue) => {
+    if (!dateValue) {
+      return "Date not set";
+    }
+
+    let parsedDate;
+
+    if (
+      typeof dateValue === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(dateValue)
+    ) {
+      const [year, month, day] = dateValue.split("-").map(Number);
+      parsedDate = new Date(year, month - 1, day);
+    } else {
+      parsedDate = new Date(dateValue);
+    }
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return "Date not set";
+    }
+
+    return parsedDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   const handleDelete = async (eventId) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this event?"
@@ -198,10 +226,22 @@ function ManageEvents() {
                 <div className="manage-event-details">
 
                   <span>
+                    📅{" "}
+                    {formatEventDate(event.eventDate)}
+                  </span>
+
+                  <span>
                     📍{" "}
                     {event.location ||
                       "Location not specified"}
                   </span>
+
+                  {event.venueName && (
+                    <span>
+                      ⌂{" "}
+                      {event.venueName}
+                    </span>
+                  )}
 
                   <span>
                     💺{" "}

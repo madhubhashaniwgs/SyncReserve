@@ -65,7 +65,19 @@ function Events() {
       return "Date not available";
     }
 
-    const parsedDate = new Date(date);
+    // LocalDate serializes as "YYYY-MM-DD" - parse as a local
+    // date to avoid timezone shifting the displayed day.
+    let parsedDate;
+
+    if (
+      typeof date === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ) {
+      const [year, month, day] = date.split("-").map(Number);
+      parsedDate = new Date(year, month - 1, day);
+    } else {
+      parsedDate = new Date(date);
+    }
 
     if (Number.isNaN(parsedDate.getTime())) {
       return date;
@@ -77,6 +89,23 @@ function Events() {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const formatPrice = (price) => {
+    if (price == null || price === "") {
+      return null;
+    }
+
+    const value = Number(price);
+
+    if (Number.isNaN(value)) {
+      return null;
+    }
+
+    return `LKR ${value.toLocaleString("en-LK", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   return (
@@ -261,6 +290,48 @@ function Events() {
 
                             <strong>
                               {event.location}
+                            </strong>
+                          </div>
+
+                        </div>
+                      )}
+
+
+                      {event.venueName && (
+                        <div className="event-meta-item">
+
+                          <span className="meta-icon">
+                            ⌂
+                          </span>
+
+                          <div>
+                            <small>
+                              VENUE
+                            </small>
+
+                            <strong>
+                              {event.venueName}
+                            </strong>
+                          </div>
+
+                        </div>
+                      )}
+
+
+                      {formatPrice(event.ticketPrice) && (
+                        <div className="event-meta-item">
+
+                          <span className="meta-icon">
+                            ◈
+                          </span>
+
+                          <div>
+                            <small>
+                              TICKET PRICE
+                            </small>
+
+                            <strong>
+                              {formatPrice(event.ticketPrice)}
                             </strong>
                           </div>
 

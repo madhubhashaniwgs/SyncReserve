@@ -7,11 +7,23 @@ import {
 import api from "../../api/axios";
 import "../../styles/EditEvent.css";
 import {
+  EVENT_CATEGORY_MAX_LENGTH,
   EVENT_DESCRIPTION_MAX_LENGTH,
   EVENT_LOCATION_MAX_LENGTH,
   EVENT_NAME_MAX_LENGTH,
+  EVENT_VENUE_MAX_LENGTH,
   isValidFutureDate,
 } from "../../utils/validation";
+
+const EVENT_CATEGORIES = [
+  "Music",
+  "Sports",
+  "Conference",
+  "Theater",
+  "Festival",
+  "Exhibition",
+  "Other",
+];
 
 function EditEvent() {
   const { eventId } = useParams();
@@ -20,8 +32,13 @@ function EditEvent() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    eventDate: "",
+    category: "",
+    venueName: "",
     location: "",
+    eventDate: "",
+    startTime: "",
+    endTime: "",
+    ticketPrice: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -42,10 +59,22 @@ function EditEvent() {
       setFormData({
         name: event.name || "",
         description: event.description || "",
+        category: event.category || "",
+        venueName: event.venueName || "",
+        location: event.location || "",
         eventDate: formatDateForInput(
           event.eventDate
         ),
-        location: event.location || "",
+        startTime: formatTimeForInput(
+          event.startTime
+        ),
+        endTime: formatTimeForInput(
+          event.endTime
+        ),
+        ticketPrice:
+          event.ticketPrice != null
+            ? String(event.ticketPrice)
+            : "",
       });
     } catch (err) {
       console.error(
@@ -71,6 +100,14 @@ function EditEvent() {
       return "";
     }
 
+    // LocalDate serializes as "YYYY-MM-DD" - use directly.
+    if (
+      typeof dateValue === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(dateValue)
+    ) {
+      return dateValue;
+    }
+
     const date = new Date(dateValue);
 
     if (Number.isNaN(date.getTime())) {
@@ -87,15 +124,16 @@ function EditEvent() {
       date.getDate()
     ).padStart(2, "0");
 
-    const hours = String(
-      date.getHours()
-    ).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-    const minutes = String(
-      date.getMinutes()
-    ).padStart(2, "0");
+  const formatTimeForInput = (timeValue) => {
+    if (!timeValue) {
+      return "";
+    }
 
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    // LocalTime serializes as "HH:mm:ss" or "HH:mm".
+    return String(timeValue).slice(0, 5);
   };
 
   const handleChange = (e) => {
@@ -125,13 +163,23 @@ function EditEvent() {
       return;
     }
 
-    if (!formData.eventDate) {
-      setError("Event date is required.");
+    if (!formData.category.trim()) {
+      setError("Category is required.");
       return;
     }
 
-    if (!isValidFutureDate(formData.eventDate)) {
-      setError("Event date must be in the future.");
+    if (formData.category.trim().length > EVENT_CATEGORY_MAX_LENGTH) {
+      setError(`Category must not exceed ${EVENT_CATEGORY_MAX_LENGTH} characters.`);
+      return;
+    }
+
+    if (!formData.venueName.trim()) {
+      setError("Venue name is required.");
+      return;
+    }
+
+    if (formData.venueName.trim().length > EVENT_VENUE_MAX_LENGTH) {
+      setError(`Venue name must not exceed ${EVENT_VENUE_MAX_LENGTH} characters.`);
       return;
     }
 
@@ -145,6 +193,42 @@ function EditEvent() {
       return;
     }
 
+    if (!formData.eventDate) {
+      setError("Event date is required.");
+      return;
+    }
+
+    if (!isValidFutureDate(formData.eventDate)) {
+      setError("Event date must be in the future.");
+      return;
+    }
+
+    if (!formData.startTime) {
+      setError("Start time is required.");
+      return;
+    }
+
+    if (!formData.endTime) {
+      setError("End time is required.");
+      return;
+    }
+
+    if (formData.endTime <= formData.startTime) {
+      setError("End time must be after start time.");
+      return;
+    }
+
+    const ticketPrice = Number(formData.ticketPrice);
+
+    if (
+      formData.ticketPrice.trim() === "" ||
+      Number.isNaN(ticketPrice) ||
+      ticketPrice < 0
+    ) {
+      setError("Ticket price must be a valid non-negative number.");
+      return;
+    }
+
     try {
       setSaving(true);
       setError("");
@@ -155,8 +239,13 @@ function EditEvent() {
           name: formData.name.trim(),
           description:
             formData.description.trim(),
-          eventDate: formData.eventDate,
+          category: formData.category.trim(),
+          venueName: formData.venueName.trim(),
           location: formData.location.trim(),
+          eventDate: formData.eventDate,
+          startTime: formData.startTime,
+          endTime: formData.endTime,
+          ticketPrice,
         }
       );
 
@@ -317,7 +406,79 @@ function EditEvent() {
 
           </div>
 
-          {/* ================= DATE / LOCATION ================= */}
+          {/* ================= CATEGORY + VENUE ================= */}
+
+          <div className="form-row">
+
+            <div className="form-group">
+
+              <label htmlFor="category">
+                Category
+              </label>
+
+              <input
+                id="category"
+                name="category"
+                type="text"
+                list="event-categories"
+                value={formData.category}
+                onChange={handleChange}
+                placeholder="e.g. Music, Sports, Conference"
+                required
+                maxLength={EVENT_CATEGORY_MAX_LENGTH}
+              />
+
+              <datalist id="event-categories">
+                {EVENT_CATEGORIES.map((category) => (
+                  <option key={category} value={category} />
+                ))}
+              </datalist>
+
+            </div>
+
+            <div className="form-group">
+
+              <label htmlFor="venueName">
+                Venue Name
+              </label>
+
+              <input
+                id="venueName"
+                name="venueName"
+                type="text"
+                value={formData.venueName}
+                onChange={handleChange}
+                placeholder="e.g. BMICH Main Hall"
+                required
+                maxLength={EVENT_VENUE_MAX_LENGTH}
+              />
+
+            </div>
+
+          </div>
+
+          {/* ================= LOCATION ================= */}
+
+          <div className="form-group">
+
+            <label htmlFor="location">
+              Location / Address
+            </label>
+
+            <input
+              id="location"
+              name="location"
+              type="text"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Event location / address"
+              required
+              maxLength={EVENT_LOCATION_MAX_LENGTH}
+            />
+
+          </div>
+
+          {/* ================= DATE + TICKET PRICE ================= */}
 
           <div className="form-row">
 
@@ -330,30 +491,71 @@ function EditEvent() {
               <input
                 id="eventDate"
                 name="eventDate"
-                type="datetime-local"
+                type="date"
                 value={formData.eventDate}
                 onChange={handleChange}
                 required
-                min={new Date().toISOString().slice(0, 16)}
+                min={new Date(Date.now() + 86400000).toISOString().slice(0, 10)}
               />
 
             </div>
 
             <div className="form-group">
 
-              <label htmlFor="location">
-                Location
+              <label htmlFor="ticketPrice">
+                Ticket Price (LKR)
               </label>
 
               <input
-                id="location"
-                name="location"
-                type="text"
-                value={formData.location}
+                id="ticketPrice"
+                name="ticketPrice"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.ticketPrice}
                 onChange={handleChange}
-                placeholder="Event location"
+                placeholder="e.g. 1500.00"
                 required
-                maxLength={EVENT_LOCATION_MAX_LENGTH}
+              />
+
+            </div>
+
+          </div>
+
+          {/* ================= START + END TIME ================= */}
+
+          <div className="form-row">
+
+            <div className="form-group">
+
+              <label htmlFor="startTime">
+                Start Time
+              </label>
+
+              <input
+                id="startTime"
+                name="startTime"
+                type="time"
+                value={formData.startTime}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+            <div className="form-group">
+
+              <label htmlFor="endTime">
+                End Time
+              </label>
+
+              <input
+                id="endTime"
+                name="endTime"
+                type="time"
+                value={formData.endTime}
+                onChange={handleChange}
+                required
               />
 
             </div>

@@ -339,7 +339,9 @@
    DATE INPUT
 ========================================================= */
 
-.form-group input[type="datetime-local"] {
+.form-group input[type="datetime-local"],
+.form-group input[type="date"],
+.form-group input[type="time"] {
   color-scheme: dark;
 }
 
