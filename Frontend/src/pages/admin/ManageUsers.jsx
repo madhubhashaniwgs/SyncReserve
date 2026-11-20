@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
+import ConfirmDialog from "../../components/ConfirmDialog";
+import "../../styles/ConfirmDialog.css";
 import "../../styles/ManageUsers.css";
 
 function ManageUsers() {
@@ -11,6 +13,7 @@ function ManageUsers() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [confirmAction, setConfirmAction] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -65,13 +68,16 @@ function ManageUsers() {
         ? "USER"
         : "ADMIN";
 
-    const confirmed = window.confirm(
-      `Are you sure you want to change ${user.name}'s role from ${currentRole} to ${newRole}?`
-    );
+    setConfirmAction({
+      type: "role",
+      user,
+      newRole,
+    });
+  };
 
-    if (!confirmed) {
-      return;
-    }
+  const applyRoleChange = async () => {
+    const user = confirmAction.user;
+    const newRole = confirmAction.newRole;
 
     try {
       setActionLoading(user.id);
@@ -114,6 +120,7 @@ function ManageUsers() {
       );
     } finally {
       setActionLoading(null);
+      setConfirmAction(null);
     }
   };
 
@@ -121,14 +128,15 @@ function ManageUsers() {
   // DELETE USER
   // ==========================================
 
-  const handleDeleteUser = async (user) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${user.name}'s account? This action cannot be undone.`
-    );
+  const handleDeleteUser = (user) => {
+    setConfirmAction({
+      type: "delete",
+      user,
+    });
+  };
 
-    if (!confirmed) {
-      return;
-    }
+  const applyDeleteUser = async () => {
+    const user = confirmAction.user;
 
     try {
       setActionLoading(user.id);
@@ -161,6 +169,15 @@ function ManageUsers() {
       );
     } finally {
       setActionLoading(null);
+      setConfirmAction(null);
+    }
+  };
+
+  const handleConfirm = () => {
+    if (confirmAction?.type === "role") {
+      applyRoleChange();
+    } else if (confirmAction?.type === "delete") {
+      applyDeleteUser();
     }
   };
 
@@ -453,6 +470,28 @@ function ManageUsers() {
         )}
 
       </section>
+
+      <ConfirmDialog
+        open={!!confirmAction}
+        title={
+          confirmAction?.type === "delete"
+            ? "Delete User"
+            : "Change User Role"
+        }
+        message={
+          confirmAction?.type === "delete"
+            ? `Are you sure you want to delete ${confirmAction.user?.name}'s account? This action cannot be undone.`
+            : `Are you sure you want to change ${confirmAction?.user?.name}'s role to ${confirmAction?.newRole}?`
+        }
+        confirmLabel={
+          confirmAction?.type === "delete"
+            ? "Delete User"
+            : "Change Role"
+        }
+        loading={actionLoading != null}
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmAction(null)}
+      />
 
     </main>
   );

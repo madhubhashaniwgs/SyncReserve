@@ -192,36 +192,54 @@
 
 .reservation-alert-error {
   background:
-    rgba(239, 68, 68, 0.05);
+    linear-gradient(
+      90deg,
+      rgba(239, 68, 68, 0.12),
+      rgba(239, 68, 68, 0.04)
+    );
 
   border:
-    1px solid rgba(239, 68, 68, 0.14);
+    1px solid rgba(239, 68, 68, 0.25);
 
-  color: #d99a96;
+  border-left: 4px solid #ef4444;
+
+  color: #f0c4c4;
+
+  box-shadow:
+    0 4px 18px rgba(239, 68, 68, 0.10);
 }
 
 .reservation-alert-error span {
   background:
-    rgba(239, 68, 68, 0.10);
+    rgba(239, 68, 68, 0.16);
 
-  color: #efaaa5;
+  color: #fca5a5;
 }
 
 .reservation-alert-success {
   background:
-    rgba(63, 166, 107, 0.06);
+    linear-gradient(
+      90deg,
+      rgba(63, 166, 107, 0.12),
+      rgba(63, 166, 107, 0.04)
+    );
 
   border:
-    1px solid rgba(63, 166, 107, 0.17);
+    1px solid rgba(63, 166, 107, 0.30);
 
-  color: #8fc8a4;
+  border-left: 4px solid #3fa66b;
+
+  color: #b9e6cb;
+
+  box-shadow:
+    0 4px 18px rgba(63, 166, 107, 0.10);
 }
 
 .reservation-alert-success span {
   background:
-    rgba(63, 166, 107, 0.11);
+    rgba(63, 166, 107, 0.16);
 
-  color: #65c98a;
+  color: #7be0a8;
 }
 
 
