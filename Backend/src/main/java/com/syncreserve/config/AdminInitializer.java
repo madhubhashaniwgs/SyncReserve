@@ -10,11 +10,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 @Component
 public class AdminInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(AdminInitializer.class);
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -41,28 +45,32 @@ public class AdminInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (adminEmail == null || adminEmail.isBlank()
                 || adminPassword == null || adminPassword.isBlank()) {
+            log.debug("Admin bootstrap skipped: ADMIN_EMAIL/ADMIN_PASSWORD not configured");
             return;
         }
 
         String email = adminEmail.trim().toLowerCase();
 
-        User user = userRepository.findByEmail(email).orElseGet(User::new);
-        boolean isNew = user.getId() == null;
-
-        if (isNew) {
-            user.setName(adminName.trim());
-            user.setEmail(email);
-            user.setPassword(passwordEncoder.encode(adminPassword));
-            user.setCreatedAt(LocalDateTime.now());
-        } else if (!passwordEncoder.matches(adminPassword, user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(adminPassword));
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            log.warn("Admin bootstrap skipped: configured admin email is invalid");
+            return;
         }
 
-        if (!"ADMIN".equals(user.getRole())) {
-            user.setRole("ADMIN");
+        if (userRepository.existsByEmail(email)) {
+            log.info("Admin bootstrap skipped: an account already exists for the configured email");
+            return;
         }
+
+        User user = new User();
+        user.setName(adminName == null || adminName.isBlank()
+                ? "Admin"
+                : adminName.trim());
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(adminPassword));
+        user.setRole("ADMIN");
+        user.setCreatedAt(LocalDateTime.now());
 
         userRepository.save(user);
-        log.info("Admin account ready for {}", email);
+        log.info("Bootstrap admin account created for {}", email);
     }
 }

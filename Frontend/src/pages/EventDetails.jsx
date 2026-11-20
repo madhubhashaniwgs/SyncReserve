@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
+import { SERVER_BASE_URL } from "../api/config";
 import "../styles/EventDetails.css";
 
 function EventDetails() {
@@ -290,6 +291,17 @@ function EventDetails() {
         {/* Event Header */}
 
         <section className="event-details-header">
+
+          {event?.coverImageUrl && (
+            <div className="event-cover-banner">
+
+              <img
+                src={`${SERVER_BASE_URL}${event.coverImageUrl}`}
+                alt={getEventName()}
+              />
+
+            </div>
+          )}
 
           <div className="event-details-heading">
 

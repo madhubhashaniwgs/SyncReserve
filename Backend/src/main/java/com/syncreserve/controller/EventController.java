@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import jakarta.validation.constraints.Max;
@@ -109,6 +110,31 @@ public class EventController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("Seats generated successfully");
+    }
+
+    // UPLOAD COVER IMAGE - ADMIN ONLY
+    @PostMapping(value = "/{eventId}/cover-image", consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EventResponse> updateCoverImage(
+            @PathVariable @Positive Long eventId,
+            @RequestParam("file") MultipartFile file
+    ) {
+
+        return ResponseEntity.ok(
+                eventService.updateCoverImage(eventId, file)
+        );
+    }
+
+    // REMOVE COVER IMAGE - ADMIN ONLY
+    @DeleteMapping("/{eventId}/cover-image")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EventResponse> removeCoverImage(
+            @PathVariable @Positive Long eventId
+    ) {
+
+        return ResponseEntity.ok(
+                eventService.removeCoverImage(eventId)
+        );
     }
 
     // GET SEATS - AUTHENTICATED USERS

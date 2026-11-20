@@ -5,6 +5,7 @@ import {
   useParams,
 } from "react-router-dom";
 import api from "../../api/axios";
+import { SERVER_BASE_URL } from "../../api/config";
 import "../../styles/EditEvent.css";
 import {
   EVENT_CATEGORY_MAX_LENGTH,
@@ -44,6 +45,8 @@ function EditEvent() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [imageUploading, setImageUploading] = useState(false);
 
   const fetchEvent = useCallback(async () => {
     try {
@@ -76,6 +79,8 @@ function EditEvent() {
             ? String(event.ticketPrice)
             : "",
       });
+
+      setCoverImageUrl(event.coverImageUrl || "");
     } catch (err) {
       console.error(
         "Failed to load event:",
@@ -143,6 +148,83 @@ function EditEvent() {
       ...current,
       [name]: value,
     }));
+  };
+
+  const ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+  ];
+
+  const handleImageSelect = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    e.target.value = "";
+
+    if (
+      !ALLOWED_IMAGE_TYPES.includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      setError(
+        "Only JPG, PNG, or WebP images up to 5MB are allowed."
+      );
+      return;
+    }
+
+    try {
+      setImageUploading(true);
+      setError("");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await api.post(
+        `/events/${eventId}/cover-image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setCoverImageUrl(
+        response.data.coverImageUrl || ""
+      );
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Unable to upload cover image."
+      );
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    try {
+      setImageUploading(true);
+      setError("");
+
+      const response = await api.delete(
+        `/events/${eventId}/cover-image`
+      );
+
+      setCoverImageUrl(
+        response.data.coverImageUrl || ""
+      );
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Unable to remove cover image."
+      );
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -557,6 +639,89 @@ function EditEvent() {
                 onChange={handleChange}
                 required
               />
+
+            </div>
+
+          </div>
+
+          {/* ================= COVER IMAGE ================= */}
+
+          <div className="form-group">
+
+            <label>
+              Cover Image
+            </label>
+
+            <div className="cover-image-section">
+
+              <div className="cover-image-preview">
+
+                {coverImageUrl ? (
+                  <>
+                    <img
+                      src={`${SERVER_BASE_URL}${coverImageUrl}`}
+                      alt="Event cover preview"
+                    />
+
+                    {imageUploading && (
+                      <div className="cover-image-overlay">
+                        Updating...
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <label
+                    className="cover-image-dropzone"
+                    htmlFor="cover-image-input"
+                  >
+                    <span className="dropzone-icon">◈</span>
+                    <span className="dropzone-text">
+                      {imageUploading
+                        ? "Uploading..."
+                        : "Click to upload cover image"}
+                    </span>
+                    <span className="dropzone-hint">
+                      JPG, PNG or WebP · max 5MB
+                    </span>
+                  </label>
+                )}
+
+              </div>
+
+              <input
+                id="cover-image-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleImageSelect}
+                disabled={imageUploading}
+                className="cover-image-input"
+              />
+
+              <div className="cover-image-controls">
+
+                {coverImageUrl ? (
+                  <>
+                    <label
+                      className="change-image-button"
+                      htmlFor="cover-image-input"
+                    >
+                      Change Image
+                    </label>
+
+                    <button
+                      type="button"
+                      className="remove-image-button"
+                      onClick={handleRemoveImage}
+                      disabled={imageUploading}
+                    >
+                      {imageUploading
+                        ? "Removing..."
+                        : "Remove Image"}
+                    </button>
+                  </>
+                ) : null}
+
+              </div>
 
             </div>
 
