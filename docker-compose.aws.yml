@@ -16,6 +16,7 @@ services:
     ports: !reset []
     volumes:
       - profile_data:/app/profile
+      - event_images:/app/event-images
 
   frontend:
     build:
@@ -30,3 +31,4 @@ services:
 
 volumes:
   profile_data:
+  event_images:
