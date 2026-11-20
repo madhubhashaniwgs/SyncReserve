@@ -1,15 +1,29 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import ConfirmDialog from "../../components/ConfirmDialog";
+import "../../styles/ConfirmDialog.css";
 import "../../styles/ManageEvents.css";
 
 function ManageEvents() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
+    if (location.state?.success) {
+      setSuccess(location.state.success);
+
+      navigate(location.pathname, {
+        replace: true,
+        state: {},
+      });
+    }
+
     fetchEvents();
   }, []);
 
@@ -64,14 +78,14 @@ function ManageEvents() {
     });
   };
 
-  const handleDelete = async (eventId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this event?"
-    );
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
-    if (!confirmed) {
+  const confirmDelete = async () => {
+    if (!deleteTarget) {
       return;
     }
+
+    const eventId = deleteTarget.id;
 
     try {
       setError("");
@@ -100,6 +114,8 @@ function ManageEvents() {
         err.response?.data?.message ||
           "Unable to delete event."
       );
+    } finally {
+      setDeleteTarget(null);
     }
   };
 
@@ -274,7 +290,7 @@ function ManageEvents() {
                   type="button"
                   className="delete-event-button"
                   onClick={() =>
-                    handleDelete(event.id)
+                    setDeleteTarget(event)
                   }
                 >
                   Delete
@@ -289,6 +305,15 @@ function ManageEvents() {
         </div>
 
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete Event"
+        message={`Are you sure you want to delete "${deleteTarget?.name || ""}"? This will also remove its seats and reservations. This action cannot be undone.`}
+        confirmLabel="Delete Event"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
 
     </main>
   );
