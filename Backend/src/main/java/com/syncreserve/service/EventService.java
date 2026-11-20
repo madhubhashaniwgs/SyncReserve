@@ -12,8 +12,11 @@ import com.syncreserve.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.syncreserve.repository.ReservationRepository;
+import com.syncreserve.util.ImageValidation;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EventService {
@@ -21,16 +24,19 @@ public class EventService {
     private final EventRepository eventRepository;
     private final SeatRepository seatRepository;
     private final ReservationRepository reservationRepository;
+    private final ImageStorageService imageStorageService;
 
     public EventService(
             EventRepository eventRepository,
             SeatRepository seatRepository,
-            ReservationRepository reservationRepository
+            ReservationRepository reservationRepository,
+            ImageStorageService imageStorageService
 
     ) {
         this.eventRepository = eventRepository;
         this.seatRepository = seatRepository;
         this.reservationRepository = reservationRepository;
+        this.imageStorageService = imageStorageService;
     }
 
     // ==========================================
@@ -127,7 +133,47 @@ public class EventService {
         );
 
         // Finally delete event
+        imageStorageService.delete(event.getCoverImageUrl());
         eventRepository.delete(event);
+    }
+
+    // ==========================================
+    // EVENT COVER IMAGE
+    // ==========================================
+
+    @Transactional
+    public EventResponse updateCoverImage(
+            Long eventId,
+            MultipartFile file
+    ) {
+
+        Event event = findEvent(eventId);
+
+        String extension = ImageValidation.validateAndGetExtension(file);
+        String filename = "event_" + eventId + "_"
+                + UUID.randomUUID() + "." + extension;
+
+        String imageUrl = imageStorageService.store(file, filename);
+
+        imageStorageService.delete(event.getCoverImageUrl());
+        event.setCoverImageUrl(imageUrl);
+
+        Event updatedEvent = eventRepository.save(event);
+
+        return mapToResponse(updatedEvent);
+    }
+
+    @Transactional
+    public EventResponse removeCoverImage(Long eventId) {
+
+        Event event = findEvent(eventId);
+
+        imageStorageService.delete(event.getCoverImageUrl());
+        event.setCoverImageUrl(null);
+
+        Event updatedEvent = eventRepository.save(event);
+
+        return mapToResponse(updatedEvent);
     }
 
 
@@ -420,6 +466,7 @@ public class EventService {
                 event.getStartTime(),
                 event.getEndTime(),
                 event.getTicketPrice(),
+                event.getCoverImageUrl(),
                 totalSeats,
                 availableSeats
         );

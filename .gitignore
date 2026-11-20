@@ -86,3 +86,6 @@ Backend/src/main/resources/application-local.properties
 # ------------------------------------------
 
 *.log
+# Uploaded images (local dev storage)
+Backend/event-images/
+Backend/profile/

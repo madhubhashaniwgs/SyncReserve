@@ -642,3 +642,47 @@
     font-size: 25px;
   }
 }
+
+/* Event cover banner on cards */
+.event-card-banner {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 14px 14px 0 0;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.event-card-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-status-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  border: 1px solid rgba(101, 201, 138, 0.45);
+
+  color: #8fe3ae;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}

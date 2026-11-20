@@ -96,7 +96,8 @@ public class SecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/verify-reset-code",
                                 "/api/auth/reset-password",
-                                "/profile/**"
+                                "/profile/**",
+                                "/event-images/**"
                         ).permitAll()
 
                         // Admin-only endpoints

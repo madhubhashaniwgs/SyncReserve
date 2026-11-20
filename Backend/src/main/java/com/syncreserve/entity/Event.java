@@ -38,6 +38,9 @@ public class Event {
     @Column(nullable = false)
     private String location;
 
+    @Column(name = "cover_image_url", length = 512)
+    private String coverImageUrl;
+
     @OneToMany(
             mappedBy = "event",
             cascade = CascadeType.ALL,
@@ -131,6 +134,14 @@ public class Event {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
     }
 
     public List<Seat> getSeats() {
