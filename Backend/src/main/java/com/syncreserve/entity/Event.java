@@ -2,7 +2,9 @@ package com.syncreserve.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,17 @@ public class Event {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime eventDate;
+    private LocalDate eventDate;
+
+    private String category;
+
+    private String venueName;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime;
+
+    private BigDecimal ticketPrice;
 
     @Column(nullable = false)
     private String location;
@@ -65,12 +77,52 @@ public class Event {
         this.description = description;
     }
 
-    public LocalDateTime getEventDate() {
+    public LocalDate getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(LocalDateTime eventDate) {
+    public void setEventDate(LocalDate eventDate) {
         this.eventDate = eventDate;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getVenueName() {
+        return venueName;
+    }
+
+    public void setVenueName(String venueName) {
+        this.venueName = venueName;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public BigDecimal getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(BigDecimal ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
 
     public String getLocation() {

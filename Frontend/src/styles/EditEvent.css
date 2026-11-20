@@ -349,7 +349,9 @@
     0 0 0 3px rgba(63, 166, 107, 0.08);
 }
 
-.form-group input[type="datetime-local"] {
+.form-group input[type="datetime-local"],
+.form-group input[type="date"],
+.form-group input[type="time"] {
   color-scheme: dark;
 }
 

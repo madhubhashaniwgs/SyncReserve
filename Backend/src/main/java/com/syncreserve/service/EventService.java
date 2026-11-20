@@ -44,8 +44,13 @@ public class EventService {
 
         event.setName(request.getName());
         event.setDescription(request.getDescription());
-        event.setEventDate(request.getEventDate());
+        event.setCategory(request.getCategory());
+        event.setVenueName(request.getVenueName());
         event.setLocation(request.getLocation());
+        event.setEventDate(request.getEventDate());
+        event.setStartTime(request.getStartTime());
+        event.setEndTime(request.getEndTime());
+        event.setTicketPrice(request.getTicketPrice());
 
         Event savedEvent = eventRepository.save(event);
 
@@ -91,8 +96,13 @@ public class EventService {
 
         event.setName(request.getName());
         event.setDescription(request.getDescription());
-        event.setEventDate(request.getEventDate());
+        event.setCategory(request.getCategory());
+        event.setVenueName(request.getVenueName());
         event.setLocation(request.getLocation());
+        event.setEventDate(request.getEventDate());
+        event.setStartTime(request.getStartTime());
+        event.setEndTime(request.getEndTime());
+        event.setTicketPrice(request.getTicketPrice());
 
         Event updatedEvent = eventRepository.save(event);
 
@@ -403,8 +413,13 @@ public class EventService {
                 event.getId(),
                 event.getName(),
                 event.getDescription(),
-                event.getEventDate(),
+                event.getCategory(),
+                event.getVenueName(),
                 event.getLocation(),
+                event.getEventDate(),
+                event.getStartTime(),
+                event.getEndTime(),
+                event.getTicketPrice(),
                 totalSeats,
                 availableSeats
         );
