@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../api/axios";
+import { SERVER_BASE_URL } from "../api/config";
 import "../styles/Events.css";
 
 function Events() {
@@ -229,17 +230,32 @@ function Events() {
                   key={event.id}
                 >
 
-                  <div className="event-card-top">
+                  {event.coverImageUrl ? (
+                    <div className="event-card-banner">
 
-                    <div className="event-card-icon">
-                      ◈
+                      <img
+                        src={`${SERVER_BASE_URL}${event.coverImageUrl}`}
+                        alt={getEventName(event)}
+                      />
+
+                      <span className="event-status event-status-overlay">
+                        AVAILABLE
+                      </span>
+
                     </div>
+                  ) : (
+                    <div className="event-card-top">
 
-                    <span className="event-status">
-                      AVAILABLE
-                    </span>
+                      <div className="event-card-icon">
+                        ◈
+                      </div>
 
-                  </div>
+                      <span className="event-status">
+                        AVAILABLE
+                      </span>
+
+                    </div>
+                  )}
 
 
                   <div className="event-card-content">

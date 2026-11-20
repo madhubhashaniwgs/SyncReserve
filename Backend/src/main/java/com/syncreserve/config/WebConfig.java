@@ -13,6 +13,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.profile-directory:profile}")
     private String profileDirectory;
 
+    @Value("${app.event-image-directory:event-images}")
+    private String eventImageDirectory;
+
     @Override
     public void addResourceHandlers(
             ResourceHandlerRegistry registry
@@ -22,6 +25,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceHandler("/profile/**")
             .addResourceLocations(
                     Paths.get(profileDirectory)
+                        .toAbsolutePath()
+                        .normalize()
+                        .toUri()
+                        .toString()
+            );
+
+        registry
+                .addResourceHandler("/event-images/**")
+            .addResourceLocations(
+                    Paths.get(eventImageDirectory)
                         .toAbsolutePath()
                         .normalize()
                         .toUri()

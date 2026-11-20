@@ -16,6 +16,7 @@ public class EventResponse {
     private LocalTime startTime;
     private LocalTime endTime;
     private BigDecimal ticketPrice;
+    private String coverImageUrl;
     private int totalSeats;
     private int availableSeats;
 
@@ -33,6 +34,7 @@ public class EventResponse {
             LocalTime startTime,
             LocalTime endTime,
             BigDecimal ticketPrice,
+            String coverImageUrl,
             int totalSeats,
             int availableSeats
     ) {
@@ -46,6 +48,7 @@ public class EventResponse {
         this.startTime = startTime;
         this.endTime = endTime;
         this.ticketPrice = ticketPrice;
+        this.coverImageUrl = coverImageUrl;
         this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;
     }
@@ -88,6 +91,10 @@ public class EventResponse {
 
     public BigDecimal getTicketPrice() {
         return ticketPrice;
+    }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
     }
 
     public int getTotalSeats() {
