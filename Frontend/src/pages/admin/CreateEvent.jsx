@@ -38,6 +38,53 @@ function CreateEvent() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [coverImage, setCoverImage] = useState(null);
+  const [coverPreview, setCoverPreview] = useState("");
+
+  const ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+  ];
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    e.target.value = "";
+
+    if (
+      !ALLOWED_IMAGE_TYPES.includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      setError(
+        "Only JPG, PNG, or WebP images up to 5MB are allowed."
+      );
+      return;
+    }
+
+    setError("");
+    setCoverPreview((previous) => {
+      if (previous) {
+        URL.revokeObjectURL(previous);
+      }
+      return URL.createObjectURL(file);
+    });
+    setCoverImage(file);
+  };
+
+  const handleRemoveImage = () => {
+    setCoverImage(null);
+    setCoverPreview((previous) => {
+      if (previous) {
+        URL.revokeObjectURL(previous);
+      }
+      return "";
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -141,7 +188,7 @@ function CreateEvent() {
       setLoading(true);
       setError("");
 
-      await api.post("/events", {
+      const response = await api.post("/events", {
         name: formData.name.trim(),
         description: formData.description.trim(),
         category: formData.category.trim(),
@@ -152,6 +199,37 @@ function CreateEvent() {
         endTime: formData.endTime,
         ticketPrice,
       });
+
+      // Upload cover image if one was selected (optional).
+      if (coverImage && response.data?.id) {
+        try {
+          const imageFormData = new FormData();
+          imageFormData.append("file", coverImage);
+
+          await api.post(
+            `/events/${response.data.id}/cover-image`,
+            imageFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+        } catch (imageErr) {
+          console.error(
+            "Event created but cover image upload failed:",
+            imageErr
+          );
+
+          navigate("/admin/events", {
+            state: {
+              success:
+                "Event created, but cover image upload failed. You can add it from Edit Event.",
+            },
+          });
+          return;
+        }
+      }
 
       navigate("/admin/events", {
         state: {
@@ -436,6 +514,79 @@ function CreateEvent() {
                 onChange={handleChange}
                 required
               />
+
+            </div>
+
+          </div>
+
+          {/* ================= COVER IMAGE (OPTIONAL) ================= */}
+
+          <div className="form-group">
+
+            <label>
+              Cover Image{" "}
+              <span className="optional-label">
+                (optional)
+              </span>
+            </label>
+
+            <div className="cover-image-section">
+
+              <input
+                id="cover-image-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleImageSelect}
+                disabled={loading}
+                className="cover-image-input"
+              />
+
+              <div className="cover-image-preview">
+
+                {coverPreview ? (
+                  <img
+                    src={coverPreview}
+                    alt="Event cover preview"
+                  />
+                ) : (
+                  <label
+                    className="cover-image-dropzone"
+                    htmlFor="cover-image-input"
+                  >
+                    <span className="dropzone-icon">◈</span>
+                    <span className="dropzone-text">
+                      Click to upload cover image
+                    </span>
+                    <span className="dropzone-hint">
+                      JPG, PNG or WebP · max 5MB
+                    </span>
+                  </label>
+                )}
+
+              </div>
+
+              <div className="cover-image-controls">
+
+                {coverImage && (
+                  <>
+                    <label
+                      className="change-image-button"
+                      htmlFor="cover-image-input"
+                    >
+                      Change Image
+                    </label>
+
+                    <button
+                      type="button"
+                      className="remove-image-button"
+                      onClick={handleRemoveImage}
+                    >
+                      Remove Image
+                    </button>
+                  </>
+                )}
+
+              </div>
 
             </div>
 
