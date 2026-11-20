@@ -219,26 +219,26 @@ By combining transactional database operations, pessimistic locking, unique cons
 ## Application Screenshots
 
 ### Home Page
-![Home Page](docs/screenshots/Home page.png)
+![Home Page](docs/screenshots/Home-page.png)
 
 ### Admin Dashboard
 ![Admin Dashboard](docs/screenshots/Admin-Dashboard.png)
 
 ### User Dashboard
-![Admin Dashboard](docs/screenshots/User Dashboard.png)
+![User Dashboard](docs/screenshots/User-Dashboard.png)
 
 #### Manage Events
-![Seat Selection](docs/screenshots/Manage Events.png)
+![Manage Events](docs/screenshots/Manage-Events.png)
 
 ### Events
-![Events](docs/screenshots/Events Page.png)
+![Events](docs/screenshots/Events-Page.png)
 
 ### Event Details
 ![Event Details](docs/screenshots/Event-View.png)
 
 #### Manage Seats
-![Seat Selection](docs/screenshots/Manage Seats.png)
+![Manage Seats](docs/screenshots/Manage-Seats.png)
 
 ### Seat Selection
-![Seat Selection](docs/screenshots/My ReserVations.png)
+![Seat Selection](docs/screenshots/My-Reservations.png)
 
