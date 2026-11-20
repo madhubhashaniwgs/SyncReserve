@@ -290,7 +290,13 @@ function EventDetails() {
 
         {/* Event Header */}
 
-        <section className="event-details-header">
+        <section
+          className={`event-details-header${
+            event?.coverImageUrl
+              ? " event-details-header--with-cover"
+              : ""
+          }`}
+        >
 
           {event?.coverImageUrl && (
             <div className="event-cover-banner">
