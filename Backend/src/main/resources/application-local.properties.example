@@ -1,11 +1,11 @@
-DB_USERNAME=postgres
-DB_PASSWORD=Saranga$2001Madhu
-MAIL_USERNAME=mockmate.app@gmail.com
-MAIL_PASSWORD=nqjedcdeffwhkbrh
-JWT_SECRET=SyncReserveSecretKeyForJwtAuthentication2026VeryLongSecret
+DB_USERNAME=
+DB_PASSWORD=
+MAIL_USERNAME=
+MAIL_PASSWORD=
+JWT_SECRET=
 
 # Bootstrap admin account (created/promoted on startup)
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=change-me
-ADMIN_NAME=Admin
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+ADMIN_NAME=
 
